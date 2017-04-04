@@ -3,12 +3,16 @@ import React from 'react'
 import { render } from 'react-dom'
 import { Router, Route, browserHistory } from 'react-router'
 import Login from 'containers/Login/Login.jsx'
-import store from 'redux/store'
+import { setCurrentUser } from 'redux/actions'
 import Dashboard from 'containers/Dashboard/Dashboard.jsx'
+import Destination from 'presenters/Destination/Destination.jsx'
+import { currentUser } from 'redux/reducers'
+import { Provider } from 'react-redux'
+import store from 'redux/store'
 
 const requireLogin = (nextState, replace) => {
-  const token = store.getState().currentUser.token
-  if(!token) {
+  const currentUser = store.getState().currentUser
+  if(!currentUser) {
     replace({ pathname: '/login' })
   }
 }

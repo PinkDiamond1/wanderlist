@@ -4,7 +4,6 @@ import store from 'redux/store'
 import { setCurrentUser } from 'redux/actions'
 import request from 'superagent'
 import { browserHistory } from 'react-router'
-import Dashboard from 'containers/Dashboard/Dashboard.jsx'
 const img = 'dist/' + require('./bg.jpg');
 
 
@@ -16,16 +15,13 @@ export default class Login extends Component {
     this.state = { input: "" }
   }
 
-  componentWillMount() {
-    if(store.getState().currentUser.token) {
+  componentDidMount() {
+    const currentUser = store.getState().currentUser
+    debugger
+    if(currentUser && currentUser.token) {
       browserHistory.push('/')
     }
-  }
 
-  componentDidMount() {
-    this.unsubscribe = store.subscribe(() => {
-      this.setState({ currentUser: store.getState().currentUser })
-    })
     // localStorage.setItem('userData', data)
     // request.get('https://young-beyond-8772.herokuapp.com/travelers')
     //           .set('Authorization', 'Token token=' + data.token)
@@ -47,6 +43,13 @@ export default class Login extends Component {
         if(err) { throw(err) }
         const data = JSON.parse(res.text)
         store.dispatch(setCurrentUser(data))
+        try {
+          const serializedState = JSON.stringify(data)
+          localStorage.setItem('currentUser', serializedState)
+        } catch(err) {
+          console.error(err)
+        }
+        debugger
         browserHistory.push('/');
       })
   }
@@ -56,24 +59,23 @@ export default class Login extends Component {
   }
 
   render() {
-      return (
-        <div className="login" style={{background: 'url(' + img + ')'}}>
-          <div className="login__backdrop"></div>
-          <div className="login__container">
-            <div>
-              <h1 className="login__h1">Wanderlist</h1>
-              <h2 className="login__h2">a friendly way to share travel destinations</h2>
-            </div>
-            <div>
-              <input className="login__input"
-                onChange={this.handleInput}
-                value={this.state.input}
-                placeholder="enter your name to continue" />
-              <div className="button--login" onClick={this.handleClick}>Login</div>
-            </div>
+    return (
+      <div className="login" style={{background: 'url(' + img + ')'}}>
+        <div className="login__backdrop"></div>
+        <div className="login__container">
+          <div>
+            <h1 className="login__h1">Wanderlist</h1>
+            <h2 className="login__h2">a friendly way to share travel destinations</h2>
+          </div>
+          <div>
+            <input className="login__input"
+              onChange={this.handleInput}
+              value={this.state.input}
+              placeholder="enter your name to continue" />
+            <div className="button--login" onClick={this.handleClick}>Login</div>
           </div>
         </div>
-      )
-    }
-
+      </div>
+    )
+  }
 }
