@@ -1,6 +1,6 @@
-export const SUBMIT_ANSWER = 'SUBMIT_ANSWER'
+export const SUCCESSFUL_LOGIN = 'SUCCESSFUL_LOGIN'
 
-export const submitAnswer = (answer) => ({
-  type: SUBMIT_ANSWER,
-  payload: answer
+export const setCurrentUser = (data) => ({
+  type: SUCCESSFUL_LOGIN,
+  payload: data
 })
