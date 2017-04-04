@@ -1,0 +1,74 @@
+.login {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+
+  &__backdrop {
+    background: #000;
+    opacity: 0.4;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+  }
+
+  &__container {
+    z-index: 10;
+    position: relative;
+    padding: 30px;
+    text-align: center;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  &__h1 {
+    font-family: 'Scada', 'Open Sans', sans-serif;
+    font-size: 42px;
+    letter-spacing: 3.5px;
+    text-align: center;
+    color: #fff;
+    font-weight: 300;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  &__h2 {
+    font-family: 'Scada', 'Open Sans', sans-serif;
+    font-size: 16px;
+    text-align: center;
+    color: #fff;
+    opacity: 0.8;
+    font-weight: 300;
+  }
+
+  &__input {
+    border: none;
+    border-bottom: 1px solid #fff;
+    background: none;
+    box-shadow: none;
+    font-family: 'Scada', 'Open Sans', sans-serif;
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 20px;
+    font-size: 18px;
+    color: #fff;
+  }
+}
+
+.button--login {
+  background: #FF5A5F;
+  color: #fff;
+  font-family: 'Open Sans';
+  font-size: 18px;
+  padding: 10px;
+  width: 100%;
+  position: relative;
+  bottom: 0;
+  left: 0;
+}

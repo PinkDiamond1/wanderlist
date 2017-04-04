@@ -1,8 +1,8 @@
 import style from '../assets/css/main.scss'
 import React from 'react'
 import { render } from 'react-dom'
-import Quiz from 'containers/Quiz/Quiz.jsx'
+import Login from 'containers/Login/Login.jsx'
 
 render(
-  <Quiz />
+  <Login />
 , document.getElementById('root'))
