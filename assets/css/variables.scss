@@ -1,0 +1,22 @@
+$blue: #01D4FB;
+$blue-hl: #1CDCFF;
+$lightblue-hl: #42D6FF;
+$black: #4A4A4A;
+
+@mixin alignvertical {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+@mixin transition($duration: 150ms) {
+  transition: $duration;
+  transition-timing-function: ease-in;
+  will-change: filter transform;
+  -webkit-transition: $duration;
+  -webkit-transition-timing-function: ease-in;
+}
+
+.hidden {
+  display: none;
+}
