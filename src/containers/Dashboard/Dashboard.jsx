@@ -4,6 +4,7 @@ import store from 'redux/store'
 import { setCurrentUser, setUsers, logout } from 'redux/actions'
 import request from 'superagent'
 import Destinations from 'presenters/Destinations/Destinations.jsx'
+import FriendDestinations from 'presenters/Destinations/FriendDestinations.jsx'
 import { Link, browserHistory } from 'react-router'
 
 const indexOfObj = (array, block) => {
@@ -25,6 +26,10 @@ export default class Dashboard extends Component {
 
   componentDidMount() {
     this.unsubscribe = store.subscribe(() => {
+      if(!store.getState().currentUser.token) {
+        return browserHistory.push('/')
+      }
+
       this.setState({ users: store.getState().users })
     })
 
@@ -92,27 +97,35 @@ export default class Dashboard extends Component {
   }
 
   render() {
-    if(!store.getState().currentUser.token) {
-      browserHistory.push('/')
-    }
     return (
       <div className="dashboard">
         <div className="dashboard__menu">
-          {this.isOwner() ? 'Your Destinations' : this.state.users.filter((user) => user.id === parseInt(this.props.params.id))[0].name + "'s Destinations"}
+          <div className="dashboard__back-button">
+            {this.isOwner() ? '' : (
+              <Link className="dashboard__back-button" to={'/travelers/' + store.getState().currentUser.id}><span className="fa fa-chevron-left"></span> Me</Link>
+            )}
+          </div>
+          <div className="dashboard__menu-title">{this.isOwner() ? 'My Destinations' : this.state.users.filter((user) => user.id === parseInt(this.props.params.id))[0].name + "'s Destinations"}</div>
           <div className="dashboard__button" onClick={this.toggleMenu}>
             <div className="fa fa-bars"></div>
           </div>
         </div>
 
         <div className="dashboard__content" style={this.state.sideMenuToggled ? { transform: 'translateX(-150px)' } : null}>
-          <Destinations handleDelete={this.deleteDestination} handleClick={this.toggleVisited} destinations={this.currentDestinations()} />
+          {this.isOwner() ? (
+            <Destinations handleDelete={this.deleteDestination} handleClick={this.toggleVisited} destinations={this.currentDestinations()} />
+          ) : (
+            <FriendDestinations destinations={this.currentDestinations()} />
+          )}
         </div>
 
         <div className="dashboard__side-menu" style={this.state.sideMenuToggled ? { transform: 'translateX(-150px)' } : null}>
-          {this.state.users.map((friend) => (
-            <Link to={'/travelers/' + friend.id} key={friend.id}>{friend.name}</Link>
-          ))}
-          <div onClick={this.logout}>Logout</div>
+          <div>
+            {this.state.users.filter((user) => user.id !== store.getState().currentUser.id).map((friend) => (
+              <Link onClick={this.toggleMenu} className="link--friend" to={'/travelers/' + friend.id} key={friend.id}><span className="fa fa-user"></span> {friend.name}</Link>
+            ))}
+          </div>
+          <div onClick={this.logout} className="button--logout"><span className="fa fa-sign-out"></span> Logout</div>
         </div>
       </div>
     )

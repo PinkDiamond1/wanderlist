@@ -13781,6 +13781,10 @@ var _Destinations = __webpack_require__(295);
 
 var _Destinations2 = _interopRequireDefault(_Destinations);
 
+var _FriendDestinations = __webpack_require__(297);
+
+var _FriendDestinations2 = _interopRequireDefault(_FriendDestinations);
+
 var _reactRouter = __webpack_require__(125);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -13822,6 +13826,10 @@ var Dashboard = function (_Component) {
       var _this2 = this;
 
       this.unsubscribe = _store2.default.subscribe(function () {
+        if (!_store2.default.getState().currentUser.token) {
+          return _reactRouter.browserHistory.push('/');
+        }
+
         _this2.setState({ users: _store2.default.getState().users });
       });
 
@@ -13924,18 +13932,29 @@ var Dashboard = function (_Component) {
     value: function render() {
       var _this7 = this;
 
-      if (!_store2.default.getState().currentUser.token) {
-        _reactRouter.browserHistory.push('/');
-      }
       return _react2.default.createElement(
         'div',
         { className: 'dashboard' },
         _react2.default.createElement(
           'div',
           { className: 'dashboard__menu' },
-          this.isOwner() ? 'Your Destinations' : this.state.users.filter(function (user) {
-            return user.id === parseInt(_this7.props.params.id);
-          })[0].name + "'s Destinations",
+          _react2.default.createElement(
+            'div',
+            { className: 'dashboard__back-button' },
+            this.isOwner() ? '' : _react2.default.createElement(
+              _reactRouter.Link,
+              { className: 'dashboard__back-button', to: '/travelers/' + _store2.default.getState().currentUser.id },
+              _react2.default.createElement('span', { className: 'fa fa-chevron-left' }),
+              ' Me'
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'dashboard__menu-title' },
+            this.isOwner() ? 'My Destinations' : this.state.users.filter(function (user) {
+              return user.id === parseInt(_this7.props.params.id);
+            })[0].name + "'s Destinations"
+          ),
           _react2.default.createElement(
             'div',
             { className: 'dashboard__button', onClick: this.toggleMenu },
@@ -13945,22 +13964,31 @@ var Dashboard = function (_Component) {
         _react2.default.createElement(
           'div',
           { className: 'dashboard__content', style: this.state.sideMenuToggled ? { transform: 'translateX(-150px)' } : null },
-          _react2.default.createElement(_Destinations2.default, { handleDelete: this.deleteDestination, handleClick: this.toggleVisited, destinations: this.currentDestinations() })
+          this.isOwner() ? _react2.default.createElement(_Destinations2.default, { handleDelete: this.deleteDestination, handleClick: this.toggleVisited, destinations: this.currentDestinations() }) : _react2.default.createElement(_FriendDestinations2.default, { destinations: this.currentDestinations() })
         ),
         _react2.default.createElement(
           'div',
           { className: 'dashboard__side-menu', style: this.state.sideMenuToggled ? { transform: 'translateX(-150px)' } : null },
-          this.state.users.map(function (friend) {
-            return _react2.default.createElement(
-              _reactRouter.Link,
-              { to: '/travelers/' + friend.id, key: friend.id },
-              friend.name
-            );
-          }),
           _react2.default.createElement(
             'div',
-            { onClick: this.logout },
-            'Logout'
+            null,
+            this.state.users.filter(function (user) {
+              return user.id !== _store2.default.getState().currentUser.id;
+            }).map(function (friend) {
+              return _react2.default.createElement(
+                _reactRouter.Link,
+                { onClick: _this7.toggleMenu, className: 'link--friend', to: '/travelers/' + friend.id, key: friend.id },
+                _react2.default.createElement('span', { className: 'fa fa-user' }),
+                ' ',
+                friend.name
+              );
+            })
+          ),
+          _react2.default.createElement(
+            'div',
+            { onClick: this.logout, className: 'button--logout' },
+            _react2.default.createElement('span', { className: 'fa fa-sign-out' }),
+            ' Logout'
           )
         )
       );
@@ -31583,7 +31611,7 @@ exports = module.exports = __webpack_require__(74)();
 
 
 // module
-exports.push([module.i, ".dashboard__content {\n  position: absolute;\n  top: 40px;\n  left: 0;\n  width: 100%;\n  transition: transform 0.3s ease;\n  padding: 5px; }\n\n.dashboard__menu {\n  background: #000;\n  color: #fff;\n  width: 100%;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  z-index: 100; }\n\n.dashboard__button {\n  float: right;\n  margin-right: 10px; }\n\n.dashboard__side-menu {\n  height: 100%;\n  position: absolute;\n  top: 0;\n  background: black;\n  right: -100%;\n  width: 100%;\n  color: #fff;\n  z-index: 10;\n  margin-top: 40px;\n  padding: 10px;\n  transition: transform 0.3s ease; }\n", ""]);
+exports.push([module.i, ".dashboard__content {\n  position: absolute;\n  top: 40px;\n  left: 0;\n  width: 100%;\n  transition: transform 0.3s ease;\n  padding: 5px; }\n\n.dashboard__menu {\n  background: #000;\n  color: #fff;\n  width: 100%;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  z-index: 100;\n  display: flex;\n  justify-content: space-between;\n  padding: 0 5px; }\n\n.dashboard__menu-title {\n  text-transform: capitalize; }\n\n.dashboard__button {\n  margin-right: 5px; }\n\n.dashboard__back-button {\n  font-size: 10px;\n  text-align: left;\n  color: #fff;\n  text-decoration: none; }\n\n.dashboard__side-menu {\n  height: calc(100% - 40px);\n  position: absolute;\n  top: 0;\n  background: black;\n  right: -100%;\n  width: 100%;\n  color: #fff;\n  z-index: 10;\n  margin-top: 40px;\n  transition: transform 0.3s ease;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between; }\n\n.link--friend {\n  background: linear-gradient(0deg, #000, #333);\n  padding: 10px;\n  display: block;\n  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5);\n  color: #fff;\n  text-decoration: none;\n  text-transform: capitalize; }\n\n.button--logout {\n  position: relative;\n  bottom: 0;\n  left: 0;\n  padding: 10px; }\n", ""]);
 
 // exports
 
@@ -31633,6 +31661,10 @@ var _Destination = __webpack_require__(275);
 
 var _Destination2 = _interopRequireDefault(_Destination);
 
+var _FriendDestination = __webpack_require__(296);
+
+var _FriendDestination2 = _interopRequireDefault(_FriendDestination);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = function (_ref) {
@@ -31678,6 +31710,100 @@ exports.default = function (_ref) {
         handleDelete: function handleDelete() {
           return _handleDelete(destination.name);
         },
+        key: destination.name,
+        name: destination.name });
+    })
+  );
+};
+
+/***/ }),
+/* 296 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _destination = __webpack_require__(277);
+
+var _destination2 = _interopRequireDefault(_destination);
+
+var _react = __webpack_require__(6);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = function (_ref) {
+  var name = _ref.name;
+  return _react2.default.createElement(
+    'div',
+    { className: 'destination' },
+    _react2.default.createElement(
+      'div',
+      { style: { display: 'flex' } },
+      name
+    )
+  );
+};
+
+/***/ }),
+/* 297 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(6);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _Destination = __webpack_require__(275);
+
+var _Destination2 = _interopRequireDefault(_Destination);
+
+var _FriendDestination = __webpack_require__(296);
+
+var _FriendDestination2 = _interopRequireDefault(_FriendDestination);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = function (_ref) {
+  var destinations = _ref.destinations;
+
+  var visited = destinations.filter(function (destination) {
+    return destination.visited;
+  });
+  var unvisited = destinations.filter(function (destination) {
+    return !destination.visited;
+  });
+  return _react2.default.createElement(
+    'div',
+    null,
+    _react2.default.createElement(
+      'h2',
+      { className: 'dashboard__h2' },
+      'Want to go:'
+    ),
+    unvisited.map(function (destination) {
+      return _react2.default.createElement(_FriendDestination2.default, {
+        key: destination.name,
+        name: destination.name });
+    }),
+    _react2.default.createElement(
+      'h2',
+      { className: 'dashboard__h2' },
+      'Have been to:'
+    ),
+    visited.map(function (destination) {
+      return _react2.default.createElement(_FriendDestination2.default, {
         key: destination.name,
         name: destination.name });
     })
