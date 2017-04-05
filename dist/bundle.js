@@ -13802,8 +13802,8 @@ var Dashboard = function (_Component) {
     var _this = _possibleConstructorReturn(this, (Dashboard.__proto__ || Object.getPrototypeOf(Dashboard)).call(this, props));
 
     _this.toggleMenu = _this.toggleMenu.bind(_this);
-    // this.toggleDestination = this.toggleDestination.bind(this)
     _this.toggleVisited = _this.toggleVisited.bind(_this);
+    _this.deleteDestination = _this.deleteDestination.bind(_this);
     _this.state = { users: [], sideMenuToggled: false };
     return _this;
   }
@@ -13822,10 +13822,6 @@ var Dashboard = function (_Component) {
           throw err;
         }
         var users = JSON.parse(res.text);
-        // const currentUserName = store.getState().currentUser.name
-        // const user = users.filter((user) => user.name === currentUserName)[0]
-        // const friends = users.filter((user) => user.name !== currentUserName)
-        // const data = { destinations: user.destinations, friends: friends }
         _store2.default.dispatch((0, _actions.setUsers)(users));
       });
     }
@@ -13867,13 +13863,36 @@ var Dashboard = function (_Component) {
       this.setState({ sideMenuToggled: !this.state.sideMenuToggled });
     }
   }, {
-    key: 'toggleVisited',
-    value: function toggleVisited(name) {
+    key: 'deleteDestination',
+    value: function deleteDestination(name) {
       var _this5 = this;
+
+      if (!this.isOwner()) {
+        return;
+      }
 
       var newUsers = [].concat(this.state.users);
       var userIndex = indexOfObj(newUsers, function (user) {
         return user.id === parseInt(_this5.props.params.id);
+      });
+      var destinationIndex = indexOfObj(newUsers[userIndex].destinations, function (destination) {
+        return destination.name === name;
+      });
+      newUsers[userIndex].destinations.splice(destinationIndex, 1);
+      this.setState({ users: newUsers });
+    }
+  }, {
+    key: 'toggleVisited',
+    value: function toggleVisited(name) {
+      var _this6 = this;
+
+      if (!this.isOwner()) {
+        return;
+      }
+
+      var newUsers = [].concat(this.state.users);
+      var userIndex = indexOfObj(newUsers, function (user) {
+        return user.id === parseInt(_this6.props.params.id);
       });
       var destinationIndex = indexOfObj(newUsers[userIndex].destinations, function (destination) {
         return destination.name === name;
@@ -13884,7 +13903,7 @@ var Dashboard = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this6 = this;
+      var _this7 = this;
 
       return _react2.default.createElement(
         'div',
@@ -13893,7 +13912,7 @@ var Dashboard = function (_Component) {
           'div',
           { className: 'dashboard__menu' },
           this.isOwner() ? 'Your Destinations' : this.state.users.filter(function (user) {
-            return user.id === parseInt(_this6.props.params.id);
+            return user.id === parseInt(_this7.props.params.id);
           })[0].name + "'s Destinations",
           _react2.default.createElement(
             'div',
@@ -13904,7 +13923,7 @@ var Dashboard = function (_Component) {
         _react2.default.createElement(
           'div',
           { className: 'dashboard__content', style: this.state.sideMenuToggled ? { transform: 'translateX(-150px)' } : null },
-          _react2.default.createElement(_Destinations2.default, { handleClick: this.toggleVisited, destinations: this.currentDestinations() })
+          _react2.default.createElement(_Destinations2.default, { handleDelete: this.deleteDestination, handleClick: this.toggleVisited, destinations: this.currentDestinations() })
         ),
         _react2.default.createElement(
           'div',
@@ -30442,17 +30461,18 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = function (_ref) {
   var name = _ref.name,
-      handleClick = _ref.handleClick;
+      handleClick = _ref.handleClick,
+      handleDelete = _ref.handleDelete;
   return _react2.default.createElement(
     'div',
-    { className: 'destination', onClick: handleClick },
+    { className: 'destination' },
     _react2.default.createElement(
       'div',
       { style: { display: 'flex' } },
-      _react2.default.createElement('div', { className: 'button--checkbox' }),
+      _react2.default.createElement('div', { className: 'button--checkbox', onClick: handleClick }),
       name
     ),
-    _react2.default.createElement('div', { className: 'button--delete fa fa-close' })
+    _react2.default.createElement('div', { onClick: handleDelete, className: 'button--delete fa fa-close' })
   );
 };
 
@@ -31588,7 +31608,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = function (_ref) {
   var destinations = _ref.destinations,
-      _handleClick = _ref.handleClick;
+      _handleClick = _ref.handleClick,
+      _handleDelete = _ref.handleDelete;
 
   var visited = destinations.filter(function (destination) {
     return destination.visited;
@@ -31609,6 +31630,9 @@ exports.default = function (_ref) {
         handleClick: function handleClick() {
           return _handleClick(destination.name);
         },
+        handleDelete: function handleDelete() {
+          return _handleDelete(destination.name);
+        },
         key: destination.name,
         name: destination.name });
     }),
@@ -31621,6 +31645,9 @@ exports.default = function (_ref) {
       return _react2.default.createElement(_Destination2.default, {
         handleClick: function handleClick() {
           return _handleClick(destination.name);
+        },
+        handleDelete: function handleDelete() {
+          return _handleDelete(destination.name);
         },
         key: destination.name,
         name: destination.name });

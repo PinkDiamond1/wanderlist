@@ -1,7 +1,7 @@
 import React from 'react'
 import Destination from '../Destination/Destination.jsx'
 
-export default ({ destinations, handleClick }) => {
+export default ({ destinations, handleClick, handleDelete }) => {
   const visited = destinations.filter((destination) => destination.visited)
   const unvisited = destinations.filter((destination) => !destination.visited)
   return (
@@ -10,6 +10,7 @@ export default ({ destinations, handleClick }) => {
       {unvisited.map((destination) => (
         <Destination
           handleClick={() => handleClick(destination.name)}
+          handleDelete={() => handleDelete(destination.name)}
           key={destination.name}
           name={destination.name} />
       ))}
@@ -17,6 +18,7 @@ export default ({ destinations, handleClick }) => {
       {visited.map((destination) => (
         <Destination
           handleClick={() => handleClick(destination.name)}
+          handleDelete={() => handleDelete(destination.name)}
           key={destination.name}
           name={destination.name} />
       ))}

@@ -18,8 +18,8 @@ export default class Dashboard extends Component {
   constructor(props) {
     super(props)
     this.toggleMenu = this.toggleMenu.bind(this)
-    // this.toggleDestination = this.toggleDestination.bind(this)
     this.toggleVisited = this.toggleVisited.bind(this)
+    this.deleteDestination = this.deleteDestination.bind(this)
     this.state = { users: [], sideMenuToggled: false }
   }
 
@@ -31,14 +31,8 @@ export default class Dashboard extends Component {
     request.get('https://young-beyond-8772.herokuapp.com/travelers')
       .set('Authorization', 'Token token=' + store.getState().currentUser.token)
       .end((err, res) => {
-        if(err) {
-          throw(err);
-        }
+        if(err) { throw(err) }
         const users = JSON.parse(res.text)
-        // const currentUserName = store.getState().currentUser.name
-        // const user = users.filter((user) => user.name === currentUserName)[0]
-        // const friends = users.filter((user) => user.name !== currentUserName)
-        // const data = { destinations: user.destinations, friends: friends }
         store.dispatch(setUsers(users))
       })
   }
@@ -48,9 +42,7 @@ export default class Dashboard extends Component {
   }
 
   currentDestinations() {
-    if(!this.state.users.length) {
-      return []
-    }
+    if(!this.state.users.length) { return [] }
 
     return this.state.users
       .filter((user) => user.id === parseInt(this.props.params.id))[0]
@@ -69,7 +61,19 @@ export default class Dashboard extends Component {
     this.setState({ sideMenuToggled: !this.state.sideMenuToggled })
   }
 
+  deleteDestination(name) {
+    if(!this.isOwner()) { return }
+
+    let newUsers = [].concat(this.state.users)
+    const userIndex = indexOfObj(newUsers, (user) => user.id === parseInt(this.props.params.id))
+    const destinationIndex = indexOfObj(newUsers[userIndex].destinations, (destination) => destination.name === name)
+    newUsers[userIndex].destinations.splice(destinationIndex, 1)
+    this.setState({ users: newUsers })
+  }
+
   toggleVisited(name) {
+    if(!this.isOwner()) { return }
+
     let newUsers = [].concat(this.state.users)
     const userIndex = indexOfObj(newUsers, (user) => user.id === parseInt(this.props.params.id))
     const destinationIndex = indexOfObj(newUsers[userIndex].destinations, (destination) => destination.name === name)
@@ -88,7 +92,7 @@ export default class Dashboard extends Component {
         </div>
 
         <div className="dashboard__content" style={this.state.sideMenuToggled ? { transform: 'translateX(-150px)' } : null}>
-          <Destinations handleClick={this.toggleVisited} destinations={this.currentDestinations()} />
+          <Destinations handleDelete={this.deleteDestination} handleClick={this.toggleVisited} destinations={this.currentDestinations()} />
         </div>
 
         <div className="dashboard__side-menu" style={this.state.sideMenuToggled ? { transform: 'translateX(-150px)' } : null}>
