@@ -1,10 +1,12 @@
 import { combineReducers } from 'redux'
-import { SUCCESSFUL_LOGIN, GET_USERS } from './actions.js'
+import { LOGIN, GET_USERS, LOGOUT } from './actions.js'
 
 export function currentUser(state = {}, action) {
   switch(action.type) {
-    case SUCCESSFUL_LOGIN:
+    case LOGIN:
       return Object.assign({}, state, action.payload)
+    case LOGOUT:
+      return {}
     default:
       return state
   }

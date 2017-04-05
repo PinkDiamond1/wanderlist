@@ -48,8 +48,8 @@ export default class Login extends Component {
         } catch(err) {
           console.error(err)
         }
-        debugger
-        browserHistory.push('/');
+
+        browserHistory.push('/travelers/' + store.getState().currentUser.id)
       })
   }
 

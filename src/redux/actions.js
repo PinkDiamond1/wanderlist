@@ -1,8 +1,9 @@
-export const SUCCESSFUL_LOGIN = 'SUCCESSFUL_LOGIN'
+export const LOGIN = 'LOGIN'
 export const GET_USERS = 'GET_USERS'
+export const LOGOUT = 'LOGOUT'
 
 export const setCurrentUser = (data) => ({
-  type: SUCCESSFUL_LOGIN,
+  type: LOGIN,
   payload: data
 })
 
@@ -11,3 +12,7 @@ export const setUsers = (data) => ({
   payload: data
 })
 
+export const logout = () => ({
+  type: LOGOUT,
+  payload: null
+})

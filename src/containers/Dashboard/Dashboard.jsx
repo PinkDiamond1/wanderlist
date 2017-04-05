@@ -1,10 +1,10 @@
 import style from './dashboard.scss'
 import React, { Component } from 'react'
 import store from 'redux/store'
-import { setCurrentUser, setUsers } from 'redux/actions'
+import { setCurrentUser, setUsers, logout } from 'redux/actions'
 import request from 'superagent'
 import Destinations from 'presenters/Destinations/Destinations.jsx'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 
 const indexOfObj = (array, block) => {
   for(var i = 0; i < array.length; i++) {
@@ -81,7 +81,20 @@ export default class Dashboard extends Component {
     this.setState({ users: newUsers })
   }
 
+  logout() {
+    try {
+      localStorage.removeItem('currentUser')
+    } catch(err) {
+      console.error(err)
+    }
+
+    store.dispatch(logout())
+  }
+
   render() {
+    if(!store.getState().currentUser.token) {
+      browserHistory.push('/')
+    }
     return (
       <div className="dashboard">
         <div className="dashboard__menu">
@@ -99,6 +112,7 @@ export default class Dashboard extends Component {
           {this.state.users.map((friend) => (
             <Link to={'/travelers/' + friend.id} key={friend.id}>{friend.name}</Link>
           ))}
+          <div onClick={this.logout}>Logout</div>
         </div>
       </div>
     )

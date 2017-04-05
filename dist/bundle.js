@@ -5451,12 +5451,13 @@ exports.default = store;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var SUCCESSFUL_LOGIN = exports.SUCCESSFUL_LOGIN = 'SUCCESSFUL_LOGIN';
+var LOGIN = exports.LOGIN = 'LOGIN';
 var GET_USERS = exports.GET_USERS = 'GET_USERS';
+var LOGOUT = exports.LOGOUT = 'LOGOUT';
 
 var setCurrentUser = exports.setCurrentUser = function setCurrentUser(data) {
   return {
-    type: SUCCESSFUL_LOGIN,
+    type: LOGIN,
     payload: data
   };
 };
@@ -5465,6 +5466,13 @@ var setUsers = exports.setUsers = function setUsers(data) {
   return {
     type: GET_USERS,
     payload: data
+  };
+};
+
+var logout = exports.logout = function logout() {
+  return {
+    type: LOGOUT,
+    payload: null
   };
 };
 
@@ -13901,10 +13909,24 @@ var Dashboard = function (_Component) {
       this.setState({ users: newUsers });
     }
   }, {
+    key: 'logout',
+    value: function logout() {
+      try {
+        localStorage.removeItem('currentUser');
+      } catch (err) {
+        console.error(err);
+      }
+
+      _store2.default.dispatch((0, _actions.logout)());
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _this7 = this;
 
+      if (!_store2.default.getState().currentUser.token) {
+        _reactRouter.browserHistory.push('/');
+      }
       return _react2.default.createElement(
         'div',
         { className: 'dashboard' },
@@ -13934,7 +13956,12 @@ var Dashboard = function (_Component) {
               { to: '/travelers/' + friend.id, key: friend.id },
               friend.name
             );
-          })
+          }),
+          _react2.default.createElement(
+            'div',
+            { onClick: this.logout },
+            'Logout'
+          )
         )
       );
     }
@@ -14036,8 +14063,8 @@ var Login = function (_Component) {
         } catch (err) {
           console.error(err);
         }
-        debugger;
-        _reactRouter.browserHistory.push('/');
+
+        _reactRouter.browserHistory.push('/travelers/' + _store2.default.getState().currentUser.id);
       });
     }
   }, {
@@ -14295,8 +14322,10 @@ function currentUser() {
   var action = arguments[1];
 
   switch (action.type) {
-    case _actions.SUCCESSFUL_LOGIN:
+    case _actions.LOGIN:
       return Object.assign({}, state, action.payload);
+    case _actions.LOGOUT:
+      return {};
     default:
       return state;
   }
