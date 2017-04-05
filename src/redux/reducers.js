@@ -10,10 +10,10 @@ export function currentUser(state = {}, action) {
   }
 }
 
-function users(state = [], action) {
+function users(state = {}, action) {
   switch(action.type) {
     case GET_USERS:
-      return [].concat(action.payload)
+      return Object.assign({}, state, action.payload)
     default:
       return state
   }

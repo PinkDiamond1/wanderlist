@@ -13751,6 +13751,10 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _dashboard = __webpack_require__(294);
+
+var _dashboard2 = _interopRequireDefault(_dashboard);
+
 var _react = __webpack_require__(6);
 
 var _react2 = _interopRequireDefault(_react);
@@ -13764,6 +13768,12 @@ var _actions = __webpack_require__(43);
 var _superagent = __webpack_require__(120);
 
 var _superagent2 = _interopRequireDefault(_superagent);
+
+var _Destinations = __webpack_require__(295);
+
+var _Destinations2 = _interopRequireDefault(_Destinations);
+
+var _reactRouter = __webpack_require__(125);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -13781,7 +13791,9 @@ var Dashboard = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, (Dashboard.__proto__ || Object.getPrototypeOf(Dashboard)).call(this, props));
 
-    _this.state = { users: [] };
+    _this.toggleMenu = _this.toggleMenu.bind(_this);
+    // this.toggleDestination = this.toggleDestination.bind(this)
+    _this.state = { friends: [], destinations: [], sideMenuToggled: false };
     return _this;
   }
 
@@ -13791,7 +13803,7 @@ var Dashboard = function (_Component) {
       var _this2 = this;
 
       this.unsubscribe = _store2.default.subscribe(function () {
-        _this2.setState({ users: _store2.default.getState().users });
+        _this2.setState(_store2.default.getState().users);
       });
 
       _superagent2.default.get('https://young-beyond-8772.herokuapp.com/travelers').set('Authorization', 'Token token=' + _store2.default.getState().currentUser.token).end(function (err, res) {
@@ -13799,7 +13811,15 @@ var Dashboard = function (_Component) {
           throw err;
         }
         var users = JSON.parse(res.text);
-        _store2.default.dispatch((0, _actions.setUsers)(users));
+        var currentUserName = _store2.default.getState().currentUser.name;
+        var user = users.filter(function (user) {
+          return user.name === currentUserName;
+        })[0];
+        var friends = users.filter(function (user) {
+          return user.name !== currentUserName;
+        });
+        var data = { destinations: user.destinations, friends: friends };
+        _store2.default.dispatch((0, _actions.setUsers)(data));
       });
     }
   }, {
@@ -13808,19 +13828,51 @@ var Dashboard = function (_Component) {
       this.unsubscribe();
     }
   }, {
+    key: 'isOwner',
+    value: function isOwner() {
+      return parseInt(this.props.params.id) === _store2.default.getState().currentUser.id;
+    }
+  }, {
+    key: 'toggleMenu',
+    value: function toggleMenu() {
+      this.setState({ sideMenuToggled: !this.state.sideMenuToggled });
+    }
+  }, {
     key: 'render',
     value: function render() {
+      var _this3 = this;
+
       return _react2.default.createElement(
         'div',
         { className: 'dashboard' },
-        this.state.users.map(function (user) {
-          return _react2.default.createElement(
+        _react2.default.createElement(
+          'div',
+          { className: 'dashboard__menu' },
+          this.isOwner() ? 'Your Destinations' : this.state.users.filter(function (user) {
+            return user.id === parseInt(_this3.props.params.id);
+          })[0].name + "'s Destinations",
+          _react2.default.createElement(
             'div',
-            null,
-            user.name,
-            user.id
-          );
-        })
+            { className: 'dashboard__button', onClick: this.toggleMenu },
+            _react2.default.createElement('div', { className: 'fa fa-bars' })
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'dashboard__content', style: this.state.sideMenuToggled ? { transform: 'translateX(-150px)' } : null },
+          _react2.default.createElement(_Destinations2.default, { destinations: this.state.destinations })
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'dashboard__side-menu', style: this.state.sideMenuToggled ? { transform: 'translateX(-150px)' } : null },
+          this.state.friends.map(function (friend) {
+            return _react2.default.createElement(
+              _reactRouter.Link,
+              { to: '/travelers/' + friend.id },
+              friend.name
+            );
+          })
+        )
       );
     }
   }]);
@@ -13891,9 +13943,8 @@ var Login = function (_Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       var currentUser = _store2.default.getState().currentUser;
-      debugger;
-      if (currentUser && currentUser.token) {
-        _reactRouter.browserHistory.push('/');
+      if (currentUser && currentUser.id && currentUser.token) {
+        _reactRouter.browserHistory.push('/travelers/' + currentUser.id);
       }
 
       // localStorage.setItem('userData', data)
@@ -14156,8 +14207,8 @@ var requireLogin = function requireLogin(nextState, replace) {
 (0, _reactDom.render)(_react2.default.createElement(
   _reactRouter.Router,
   { history: _reactRouter.browserHistory },
-  _react2.default.createElement(_reactRouter.Route, { path: '/', component: _Dashboard2.default, onEnter: requireLogin }),
-  _react2.default.createElement(_reactRouter.Route, { path: '/login', component: _Login2.default })
+  _react2.default.createElement(_reactRouter.Route, { path: '/', component: _Login2.default }),
+  _react2.default.createElement(_reactRouter.Route, { path: '/travelers/:id', component: _Dashboard2.default, onEnter: requireLogin })
 ), document.getElementById('root'));
 
 /***/ }),
@@ -14189,12 +14240,12 @@ function currentUser() {
 }
 
 function users() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var action = arguments[1];
 
   switch (action.type) {
     case _actions.GET_USERS:
-      return [].concat(action.payload);
+      return Object.assign({}, state, action.payload);
     default:
       return state;
   }
@@ -30346,10 +30397,11 @@ var _react2 = _interopRequireDefault(_react);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = function (_ref) {
-  var name = _ref.name;
+  var name = _ref.name,
+      onClick = _ref.onClick;
   return _react2.default.createElement(
     'div',
-    { className: 'destination' },
+    { className: 'destination', onClick: onClick },
     _react2.default.createElement(
       'div',
       { style: { display: 'flex' } },
@@ -30369,7 +30421,7 @@ exports = module.exports = __webpack_require__(74)();
 
 
 // module
-exports.push([module.i, ".destination {\n  width: calc(100% - 4px);\n  border: 1px solid #979797;\n  border-radius: 3px;\n  margin: 2px;\n  padding: 15px;\n  display: flex;\n  background: #333;\n  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.9);\n  color: #fff;\n  justify-content: space-between;\n  font-size: 16px; }\n\n.button--checkbox {\n  width: 20px;\n  height: 20px;\n  border: 1px solid #ccc;\n  border-radius: 2px;\n  margin-right: 10px; }\n\n.button--delete {\n  margin-top: 2px; }\n", ""]);
+exports.push([module.i, ".destination {\n  width: calc(100% - 4px);\n  border: 1px solid #979797;\n  border-radius: 3px;\n  margin: 2px;\n  padding: 15px;\n  display: flex;\n  background: #333;\n  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);\n  color: #fff;\n  justify-content: space-between;\n  font-size: 16px; }\n\n.button--checkbox {\n  width: 20px;\n  height: 20px;\n  border: 1px solid #ccc;\n  border-radius: 2px;\n  margin-right: 10px; }\n\n.button--delete {\n  margin-top: 2px; }\n", ""]);
 
 // exports
 
@@ -31428,6 +31480,98 @@ function shallowEqual(objA, objB) {
 
   return true;
 }
+
+/***/ }),
+/* 293 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(74)();
+// imports
+
+
+// module
+exports.push([module.i, ".dashboard__content {\n  position: absolute;\n  top: 40px;\n  left: 0;\n  width: 100%;\n  transition: transform 0.3s ease;\n  padding: 5px; }\n\n.dashboard__menu {\n  background: #000;\n  color: #fff;\n  width: 100%;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  z-index: 100; }\n\n.dashboard__button {\n  float: right;\n  margin-right: 10px; }\n\n.dashboard__side-menu {\n  height: 100%;\n  position: absolute;\n  top: 0;\n  background: black;\n  right: -100%;\n  width: 100%;\n  color: #fff;\n  z-index: 10;\n  margin-top: 40px;\n  padding: 10px;\n  transition: transform 0.3s ease; }\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 294 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(293);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(119)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/sass-loader/lib/loader.js!./dashboard.scss", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/sass-loader/lib/loader.js!./dashboard.scss");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 295 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(6);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _Destination = __webpack_require__(275);
+
+var _Destination2 = _interopRequireDefault(_Destination);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = function (_ref) {
+  var destinations = _ref.destinations;
+
+  var visited = destinations.filter(function (destination) {
+    return destination.visited;
+  });
+  var unvisited = destinations.filter(function (destination) {
+    return !destination.visited;
+  });
+  return _react2.default.createElement(
+    'div',
+    null,
+    _react2.default.createElement(
+      'h2',
+      { className: 'dashboard__h2' },
+      'Want to go:'
+    ),
+    unvisited.map(function (destination) {
+      return _react2.default.createElement(_Destination2.default, { name: destination.name });
+    }),
+    _react2.default.createElement(
+      'h2',
+      { className: 'dashboard__h2' },
+      'Have been to:'
+    ),
+    visited.map(function (destination) {
+      return _react2.default.createElement(_Destination2.default, { name: destination.name });
+    })
+  );
+};
 
 /***/ })
 /******/ ]);

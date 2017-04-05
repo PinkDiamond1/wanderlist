@@ -1,0 +1,39 @@
+.dashboard {
+  &__content {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    width: 100%;
+    transition: transform 0.3s ease;
+    padding: 5px;
+  }
+
+  &__menu {
+    background: #000;
+    color: #fff;
+    width: 100%;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    z-index: 100;
+  }
+
+  &__button {
+    float: right;
+    margin-right: 10px;
+  }
+
+  &__side-menu {
+    height: 100%;
+    position: absolute;
+    top: 0;
+    background: black;
+    right: -100%;
+    width: 100%;
+    color: #fff;
+    z-index: 10;
+    margin-top: 40px;
+    padding: 10px;
+    transition: transform 0.3s ease;
+  }
+}

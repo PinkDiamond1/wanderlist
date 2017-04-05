@@ -17,9 +17,8 @@ export default class Login extends Component {
 
   componentDidMount() {
     const currentUser = store.getState().currentUser
-    debugger
-    if(currentUser && currentUser.token) {
-      browserHistory.push('/')
+    if(currentUser && currentUser.id && currentUser.token) {
+      browserHistory.push('/travelers/' + currentUser.id)
     }
 
     // localStorage.setItem('userData', data)

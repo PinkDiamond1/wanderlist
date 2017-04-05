@@ -19,8 +19,8 @@ const requireLogin = (nextState, replace) => {
 
 render(
   <Router history={browserHistory}>
-    <Route path="/" component={Dashboard} onEnter={requireLogin} />
-    <Route path="/login" component={Login} />
+    <Route path="/" component={Login} />
+    <Route path="/travelers/:id" component={Dashboard} onEnter={requireLogin} />
   </Router>
 , document.getElementById('root'))
 
