@@ -13783,6 +13783,16 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var indexOfObj = function indexOfObj(array, block) {
+  for (var i = 0; i < array.length; i++) {
+    if (block(array[i])) {
+      return i;
+    }
+  }
+
+  return -1;
+};
+
 var Dashboard = function (_Component) {
   _inherits(Dashboard, _Component);
 
@@ -13793,7 +13803,8 @@ var Dashboard = function (_Component) {
 
     _this.toggleMenu = _this.toggleMenu.bind(_this);
     // this.toggleDestination = this.toggleDestination.bind(this)
-    _this.state = { friends: [], destinations: [], sideMenuToggled: false };
+    _this.toggleVisited = _this.toggleVisited.bind(_this);
+    _this.state = { users: [], sideMenuToggled: false };
     return _this;
   }
 
@@ -13803,7 +13814,7 @@ var Dashboard = function (_Component) {
       var _this2 = this;
 
       this.unsubscribe = _store2.default.subscribe(function () {
-        _this2.setState(_store2.default.getState().users);
+        _this2.setState({ users: _store2.default.getState().users });
       });
 
       _superagent2.default.get('https://young-beyond-8772.herokuapp.com/travelers').set('Authorization', 'Token token=' + _store2.default.getState().currentUser.token).end(function (err, res) {
@@ -13811,15 +13822,11 @@ var Dashboard = function (_Component) {
           throw err;
         }
         var users = JSON.parse(res.text);
-        var currentUserName = _store2.default.getState().currentUser.name;
-        var user = users.filter(function (user) {
-          return user.name === currentUserName;
-        })[0];
-        var friends = users.filter(function (user) {
-          return user.name !== currentUserName;
-        });
-        var data = { destinations: user.destinations, friends: friends };
-        _store2.default.dispatch((0, _actions.setUsers)(data));
+        // const currentUserName = store.getState().currentUser.name
+        // const user = users.filter((user) => user.name === currentUserName)[0]
+        // const friends = users.filter((user) => user.name !== currentUserName)
+        // const data = { destinations: user.destinations, friends: friends }
+        _store2.default.dispatch((0, _actions.setUsers)(users));
       });
     }
   }, {
@@ -13828,9 +13835,31 @@ var Dashboard = function (_Component) {
       this.unsubscribe();
     }
   }, {
+    key: 'currentDestinations',
+    value: function currentDestinations() {
+      var _this3 = this;
+
+      if (!this.state.users.length) {
+        return [];
+      }
+
+      return this.state.users.filter(function (user) {
+        return user.id === parseInt(_this3.props.params.id);
+      })[0].destinations;
+    }
+  }, {
     key: 'isOwner',
     value: function isOwner() {
       return parseInt(this.props.params.id) === _store2.default.getState().currentUser.id;
+    }
+  }, {
+    key: 'getActiveUser',
+    value: function getActiveUser() {
+      var _this4 = this;
+
+      return this.state.users.filter(function (user) {
+        return user.id === parseInt(_this4.props.params.id);
+      });
     }
   }, {
     key: 'toggleMenu',
@@ -13838,9 +13867,24 @@ var Dashboard = function (_Component) {
       this.setState({ sideMenuToggled: !this.state.sideMenuToggled });
     }
   }, {
+    key: 'toggleVisited',
+    value: function toggleVisited(name) {
+      var _this5 = this;
+
+      var newUsers = [].concat(this.state.users);
+      var userIndex = indexOfObj(newUsers, function (user) {
+        return user.id === parseInt(_this5.props.params.id);
+      });
+      var destinationIndex = indexOfObj(newUsers[userIndex].destinations, function (destination) {
+        return destination.name === name;
+      });
+      newUsers[userIndex].destinations[destinationIndex].visited = !newUsers[userIndex].destinations[destinationIndex].visited;
+      this.setState({ users: newUsers });
+    }
+  }, {
     key: 'render',
     value: function render() {
-      var _this3 = this;
+      var _this6 = this;
 
       return _react2.default.createElement(
         'div',
@@ -13849,7 +13893,7 @@ var Dashboard = function (_Component) {
           'div',
           { className: 'dashboard__menu' },
           this.isOwner() ? 'Your Destinations' : this.state.users.filter(function (user) {
-            return user.id === parseInt(_this3.props.params.id);
+            return user.id === parseInt(_this6.props.params.id);
           })[0].name + "'s Destinations",
           _react2.default.createElement(
             'div',
@@ -13860,15 +13904,15 @@ var Dashboard = function (_Component) {
         _react2.default.createElement(
           'div',
           { className: 'dashboard__content', style: this.state.sideMenuToggled ? { transform: 'translateX(-150px)' } : null },
-          _react2.default.createElement(_Destinations2.default, { destinations: this.state.destinations })
+          _react2.default.createElement(_Destinations2.default, { handleClick: this.toggleVisited, destinations: this.currentDestinations() })
         ),
         _react2.default.createElement(
           'div',
           { className: 'dashboard__side-menu', style: this.state.sideMenuToggled ? { transform: 'translateX(-150px)' } : null },
-          this.state.friends.map(function (friend) {
+          this.state.users.map(function (friend) {
             return _react2.default.createElement(
               _reactRouter.Link,
-              { to: '/travelers/' + friend.id },
+              { to: '/travelers/' + friend.id, key: friend.id },
               friend.name
             );
           })
@@ -14240,12 +14284,12 @@ function currentUser() {
 }
 
 function users() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
   var action = arguments[1];
 
   switch (action.type) {
     case _actions.GET_USERS:
-      return Object.assign({}, state, action.payload);
+      return [].concat(action.payload);
     default:
       return state;
   }
@@ -30398,10 +30442,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = function (_ref) {
   var name = _ref.name,
-      onClick = _ref.onClick;
+      handleClick = _ref.handleClick;
   return _react2.default.createElement(
     'div',
-    { className: 'destination', onClick: onClick },
+    { className: 'destination', onClick: handleClick },
     _react2.default.createElement(
       'div',
       { style: { display: 'flex' } },
@@ -31543,7 +31587,8 @@ var _Destination2 = _interopRequireDefault(_Destination);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = function (_ref) {
-  var destinations = _ref.destinations;
+  var destinations = _ref.destinations,
+      _handleClick = _ref.handleClick;
 
   var visited = destinations.filter(function (destination) {
     return destination.visited;
@@ -31560,7 +31605,12 @@ exports.default = function (_ref) {
       'Want to go:'
     ),
     unvisited.map(function (destination) {
-      return _react2.default.createElement(_Destination2.default, { name: destination.name });
+      return _react2.default.createElement(_Destination2.default, {
+        handleClick: function handleClick() {
+          return _handleClick(destination.name);
+        },
+        key: destination.name,
+        name: destination.name });
     }),
     _react2.default.createElement(
       'h2',
@@ -31568,7 +31618,12 @@ exports.default = function (_ref) {
       'Have been to:'
     ),
     visited.map(function (destination) {
-      return _react2.default.createElement(_Destination2.default, { name: destination.name });
+      return _react2.default.createElement(_Destination2.default, {
+        handleClick: function handleClick() {
+          return _handleClick(destination.name);
+        },
+        key: destination.name,
+        name: destination.name });
     })
   );
 };

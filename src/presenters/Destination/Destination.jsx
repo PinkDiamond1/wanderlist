@@ -1,8 +1,8 @@
 import style from './destination.scss'
 import React from 'react'
 
-export default ({ name, onClick }) => (
-  <div className="destination" onClick={onClick}>
+export default ({ name, handleClick }) => (
+  <div className="destination" onClick={handleClick}>
     <div style={{display: 'flex'}}>
       <div className="button--checkbox"></div>
       {name}
