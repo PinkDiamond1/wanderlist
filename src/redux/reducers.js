@@ -1,5 +1,13 @@
 import { combineReducers } from 'redux'
-import { LOGIN, GET_USERS, LOGOUT } from './actions.js'
+import { LOGIN, GET_USERS, LOGOUT, ADD_DESTINATION } from './actions.js'
+
+const indexOfObj = (array, block) => {
+  for(var i = 0; i < array.length; i++) {
+    if(block(array[i])) { return i }
+  }
+
+  return -1
+}
 
 export function currentUser(state = {}, action) {
   switch(action.type) {
@@ -16,6 +24,11 @@ function users(state = [], action) {
   switch(action.type) {
     case GET_USERS:
       return [].concat(action.payload)
+    case ADD_DESTINATION:
+      let newUsers = [].concat(state)
+      const userIndex = indexOfObj(newUsers, (user) => user.id === action.payload.userId)
+      newUsers[userIndex].destinations.push({ name: action.payload.address, visited: false })
+      return newUsers
     default:
       return state
   }

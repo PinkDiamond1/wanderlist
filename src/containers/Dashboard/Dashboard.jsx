@@ -6,6 +6,7 @@ import request from 'superagent'
 import Destinations from 'presenters/Destinations/Destinations.jsx'
 import FriendDestinations from 'presenters/Destinations/FriendDestinations.jsx'
 import { Link, browserHistory } from 'react-router'
+import DestinationSearch from 'presenters/DestinationSearch/DestinationSearch.jsx'
 
 const indexOfObj = (array, block) => {
   for(var i = 0; i < array.length; i++) {
@@ -110,6 +111,8 @@ export default class Dashboard extends Component {
             <div className="fa fa-bars"></div>
           </div>
         </div>
+
+        <DestinationSearch />
 
         <div className="dashboard__content" style={this.state.sideMenuToggled ? { transform: 'translateX(-150px)' } : null}>
           {this.isOwner() ? (

@@ -5454,6 +5454,7 @@ Object.defineProperty(exports, "__esModule", {
 var LOGIN = exports.LOGIN = 'LOGIN';
 var GET_USERS = exports.GET_USERS = 'GET_USERS';
 var LOGOUT = exports.LOGOUT = 'LOGOUT';
+var ADD_DESTINATION = exports.ADD_DESTINATION = 'ADD_DESTINATION';
 
 var setCurrentUser = exports.setCurrentUser = function setCurrentUser(data) {
   return {
@@ -5473,6 +5474,13 @@ var logout = exports.logout = function logout() {
   return {
     type: LOGOUT,
     payload: null
+  };
+};
+
+var addDestination = exports.addDestination = function addDestination(data) {
+  return {
+    type: ADD_DESTINATION,
+    payload: data
   };
 };
 
@@ -13787,6 +13795,10 @@ var _FriendDestinations2 = _interopRequireDefault(_FriendDestinations);
 
 var _reactRouter = __webpack_require__(125);
 
+var _DestinationSearch = __webpack_require__(299);
+
+var _DestinationSearch2 = _interopRequireDefault(_DestinationSearch);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -13961,6 +13973,7 @@ var Dashboard = function (_Component) {
             _react2.default.createElement('div', { className: 'fa fa-bars' })
           )
         ),
+        _react2.default.createElement(_DestinationSearch2.default, null),
         _react2.default.createElement(
           'div',
           { className: 'dashboard__content', style: this.state.sideMenuToggled ? { transform: 'translateX(-150px)' } : null },
@@ -14345,6 +14358,16 @@ var _redux = __webpack_require__(117);
 
 var _actions = __webpack_require__(43);
 
+var indexOfObj = function indexOfObj(array, block) {
+  for (var i = 0; i < array.length; i++) {
+    if (block(array[i])) {
+      return i;
+    }
+  }
+
+  return -1;
+};
+
 function currentUser() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var action = arguments[1];
@@ -14366,6 +14389,13 @@ function users() {
   switch (action.type) {
     case _actions.GET_USERS:
       return [].concat(action.payload);
+    case _actions.ADD_DESTINATION:
+      var newUsers = [].concat(state);
+      var userIndex = indexOfObj(newUsers, function (user) {
+        return user.id === action.payload.userId;
+      });
+      newUsers[userIndex].destinations.push({ name: action.payload.address, visited: false });
+      return newUsers;
     default:
       return state;
   }
@@ -31611,7 +31641,7 @@ exports = module.exports = __webpack_require__(74)();
 
 
 // module
-exports.push([module.i, ".dashboard__content {\n  position: absolute;\n  top: 40px;\n  left: 0;\n  width: 100%;\n  transition: transform 0.3s ease;\n  padding: 5px; }\n\n.dashboard__menu {\n  background: #000;\n  color: #fff;\n  width: 100%;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  z-index: 100;\n  display: flex;\n  justify-content: space-between;\n  padding: 0 5px; }\n\n.dashboard__menu-title {\n  text-transform: capitalize; }\n\n.dashboard__button {\n  margin-right: 5px; }\n\n.dashboard__back-button {\n  font-size: 10px;\n  text-align: left;\n  color: #fff;\n  text-decoration: none; }\n\n.dashboard__side-menu {\n  height: calc(100% - 40px);\n  position: absolute;\n  top: 0;\n  background: black;\n  right: -100%;\n  width: 100%;\n  color: #fff;\n  z-index: 10;\n  margin-top: 40px;\n  transition: transform 0.3s ease;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between; }\n\n.link--friend {\n  background: linear-gradient(0deg, #000, #333);\n  padding: 10px;\n  display: block;\n  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5);\n  color: #fff;\n  text-decoration: none;\n  text-transform: capitalize; }\n\n.button--logout {\n  position: relative;\n  bottom: 0;\n  left: 0;\n  padding: 10px; }\n", ""]);
+exports.push([module.i, ".dashboard__content {\n  top: 40px;\n  left: 0;\n  width: 100%;\n  transition: transform 0.3s ease; }\n\n.dashboard__menu {\n  background: #000;\n  color: #fff;\n  width: 100%;\n  height: 40px;\n  text-align: center;\n  line-height: 40px;\n  z-index: 100;\n  display: flex;\n  justify-content: space-between;\n  padding: 0 5px; }\n\n.dashboard__menu-title {\n  text-transform: capitalize; }\n\n.dashboard__button {\n  margin-right: 5px; }\n\n.dashboard__back-button {\n  font-size: 10px;\n  text-align: left;\n  color: #fff;\n  text-decoration: none; }\n\n.dashboard__side-menu {\n  height: calc(100% - 40px);\n  position: absolute;\n  top: 0;\n  background: black;\n  right: -100%;\n  width: 100%;\n  color: #fff;\n  z-index: 10;\n  margin-top: 40px;\n  transition: transform 0.3s ease;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between; }\n\n.link--friend {\n  background: linear-gradient(0deg, #000, #333);\n  padding: 10px;\n  display: block;\n  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5);\n  color: #fff;\n  text-decoration: none;\n  text-transform: capitalize; }\n\n.button--logout {\n  position: relative;\n  bottom: 0;\n  left: 0;\n  padding: 10px; }\n", ""]);
 
 // exports
 
@@ -31809,6 +31839,1295 @@ exports.default = function (_ref) {
     })
   );
 };
+
+/***/ }),
+/* 298 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var defaultStyles = {
+  root: {
+    position: 'relative',
+    paddingBottom: '0px'
+  },
+  autocompleteContainer: {
+    position: 'absolute',
+    top: '100%',
+    backgroundColor: 'white',
+    border: '1px solid #555',
+    width: '100%',
+    zIndex: 9999
+  },
+  autocompleteItem: {
+    backgroundColor: '#ffffff',
+    padding: '10px',
+    color: '#555',
+    cursor: 'pointer'
+  },
+  autocompleteItemActive: {
+    backgroundColor: '#fafafa'
+  }
+};
+
+exports.default = defaultStyles;
+
+/***/ }),
+/* 299 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _destination_search = __webpack_require__(307);
+
+var _destination_search2 = _interopRequireDefault(_destination_search);
+
+var _react = __webpack_require__(6);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _store = __webpack_require__(42);
+
+var _store2 = _interopRequireDefault(_store);
+
+var _actions = __webpack_require__(43);
+
+var _reactPlacesAutocomplete = __webpack_require__(304);
+
+var _reactPlacesAutocomplete2 = _interopRequireDefault(_reactPlacesAutocomplete);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var DestinationSearch = function (_React$Component) {
+  _inherits(DestinationSearch, _React$Component);
+
+  function DestinationSearch(props) {
+    _classCallCheck(this, DestinationSearch);
+
+    var _this = _possibleConstructorReturn(this, (DestinationSearch.__proto__ || Object.getPrototypeOf(DestinationSearch)).call(this, props));
+
+    _this.state = {
+      address: '',
+      geocodeResults: null,
+      loading: false
+    };
+    _this.handleSelect = _this.handleSelect.bind(_this);
+    _this.handleChange = _this.handleChange.bind(_this);
+    _this.renderGeocodeFailure = _this.renderGeocodeFailure.bind(_this);
+    _this.renderGeocodeSuccess = _this.renderGeocodeSuccess.bind(_this);
+    return _this;
+  }
+
+  _createClass(DestinationSearch, [{
+    key: 'handleSelect',
+    value: function handleSelect(address) {
+      this.setState({
+        address: ''
+      });
+
+      _store2.default.dispatch((0, _actions.addDestination)({ address: address, userId: _store2.default.getState().currentUser.id }));
+
+      // geocodeByAddress(address,  (err, { lat, lng }) => {
+      //   if (err) {
+      //     console.log('Oh no!', err)
+      //     this.setState({
+      //       geocodeResults: this.renderGeocodeFailure(err),
+      //       loading: false
+      //     })
+      //   }
+      //   console.log(`Yay! got latitude and longitude for ${address}`, { lat, lng })
+      //   this.setState({
+      //     geocodeResults: this.renderGeocodeSuccess(lat, lng),
+      //     loading: false
+      //   })
+      // })
+    }
+  }, {
+    key: 'handleChange',
+    value: function handleChange(address) {
+      this.setState({
+        address: address,
+        geocodeResults: null
+      });
+    }
+  }, {
+    key: 'renderGeocodeFailure',
+    value: function renderGeocodeFailure(err) {
+      return _react2.default.createElement(
+        'div',
+        { className: 'alert alert-danger', role: 'alert' },
+        _react2.default.createElement(
+          'strong',
+          null,
+          'Error!'
+        ),
+        ' ',
+        err
+      );
+    }
+  }, {
+    key: 'renderGeocodeSuccess',
+    value: function renderGeocodeSuccess(lat, lng) {
+      // debugger
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      if (!this.state.loading && this.state.geocodeResults) {
+        debugger;
+      }
+      var cssClasses = {
+        root: 'form-group',
+        label: 'form-label',
+        input: 'Demo__search-input',
+        autocompleteContainer: 'Demo__autocomplete-container'
+      };
+
+      var AutocompleteItem = function AutocompleteItem(_ref) {
+        var formattedSuggestion = _ref.formattedSuggestion;
+        return _react2.default.createElement(
+          'div',
+          { className: 'Demo__suggestion-item' },
+          _react2.default.createElement('i', { className: 'fa fa-map-marker Demo__suggestion-icon' }),
+          _react2.default.createElement(
+            'strong',
+            null,
+            formattedSuggestion.mainText
+          ),
+          ' ',
+          _react2.default.createElement(
+            'small',
+            { className: 'text-muted' },
+            formattedSuggestion.secondaryText
+          )
+        );
+      };
+
+      return _react2.default.createElement(
+        'div',
+        { className: 'destination-search' },
+        _react2.default.createElement(_reactPlacesAutocomplete2.default, {
+          value: this.state.address,
+          onChange: this.handleChange,
+          onSelect: this.handleSelect,
+          classNames: cssClasses,
+          autocompleteItem: AutocompleteItem,
+          autoFocus: true,
+          placeholder: 'Search Places',
+          hideLabel: true,
+          inputName: 'Demo__input',
+          onEnterKeyDown: this.handleSelect
+        }),
+        this.state.loading ? _react2.default.createElement(
+          'div',
+          null,
+          _react2.default.createElement('i', { className: 'fa fa-spinner fa-pulse fa-3x fa-fw Demo__spinner' })
+        ) : null
+      );
+    }
+  }]);
+
+  return DestinationSearch;
+}(_react2.default.Component);
+
+exports.default = DestinationSearch;
+
+/***/ }),
+/* 300 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(6);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _PlacesAutocompleteWithTypeAhead = __webpack_require__(302);
+
+var _PlacesAutocompleteWithTypeAhead2 = _interopRequireDefault(_PlacesAutocompleteWithTypeAhead);
+
+var _PlacesAutocompleteBasic = __webpack_require__(301);
+
+var _PlacesAutocompleteBasic2 = _interopRequireDefault(_PlacesAutocompleteBasic);
+
+var _helpers = __webpack_require__(303);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; } /*
+                                                                                                                                                                                                                             * Copyright (c) 2017 Ken Hibino.
+                                                                                                                                                                                                                             * Licensed under the MIT License (MIT).
+                                                                                                                                                                                                                             * See https://kenny-hibino.github.io/react-places-autocomplete
+                                                                                                                                                                                                                             */
+
+var PlacesAutocomplete = function PlacesAutocomplete(props) {
+  var typeAhead = props.typeAhead,
+      rest = _objectWithoutProperties(props, ['typeAhead']);
+  // Work around for React KeyDown event issue: https://github.com/facebook/react/issues/6176
+
+
+  var isMobile = (0, _helpers.mobileCheck)();
+  if (typeAhead && !isMobile) {
+    return _react2.default.createElement(_PlacesAutocompleteWithTypeAhead2.default, rest);
+  } else {
+    return _react2.default.createElement(_PlacesAutocompleteBasic2.default, rest);
+  }
+};
+
+PlacesAutocomplete.propTypes = {
+  value: _react2.default.PropTypes.string.isRequired,
+  onChange: _react2.default.PropTypes.func.isRequired,
+  onError: _react2.default.PropTypes.func,
+  clearItemsOnError: _react2.default.PropTypes.bool,
+  onSelect: _react2.default.PropTypes.func,
+  placeholder: _react2.default.PropTypes.string,
+  autoFocus: _react2.default.PropTypes.bool,
+  inputName: _react2.default.PropTypes.string,
+  inputId: _react2.default.PropTypes.string,
+  autocompleteItem: _react2.default.PropTypes.func,
+  classNames: _react2.default.PropTypes.shape({
+    root: _react2.default.PropTypes.string,
+    input: _react2.default.PropTypes.string,
+    autocompleteContainer: _react2.default.PropTypes.string
+  }),
+  styles: _react2.default.PropTypes.shape({
+    root: _react2.default.PropTypes.object,
+    input: _react2.default.PropTypes.object,
+    autocompleteContainer: _react2.default.PropTypes.object,
+    autocompleteItem: _react2.default.PropTypes.object,
+    autocompleteItemActive: _react2.default.PropTypes.object
+  }),
+  options: _react2.default.PropTypes.shape({
+    bounds: _react2.default.PropTypes.object,
+    componentRestrictions: _react2.default.PropTypes.object,
+    location: _react2.default.PropTypes.object,
+    offset: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.number, _react2.default.PropTypes.string]),
+    radius: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.number, _react2.default.PropTypes.string]),
+    types: _react2.default.PropTypes.array
+  }),
+  typeAhead: _react2.default.PropTypes.bool
+};
+
+PlacesAutocomplete.defaultProps = {
+  clearItemsOnError: false,
+  onError: function onError(status) {
+    return console.error('[react-places-autocomplete]: error happened when fetching data from Google Maps API.\nPlease check the docs here (https://developers.google.com/maps/documentation/javascript/places#place_details_responses)\nStatus: ', status);
+  },
+  placeholder: 'Address',
+  autoFocus: false,
+  classNames: {},
+  autocompleteItem: function autocompleteItem(_ref) {
+    var suggestion = _ref.suggestion;
+    return _react2.default.createElement(
+      'div',
+      null,
+      suggestion
+    );
+  },
+  styles: {},
+  options: {},
+  typeAhead: false
+};
+
+exports.default = PlacesAutocomplete;
+
+/***/ }),
+/* 301 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(6);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _defaultStyles = __webpack_require__(298);
+
+var _defaultStyles2 = _interopRequireDefault(_defaultStyles);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * Copyright (c) 2017 Ken Hibino.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * Licensed under the MIT License (MIT).
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * See https://kenny-hibino.github.io/react-places-autocomplete
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
+
+var PlacesAutocompleteBasic = function (_Component) {
+  _inherits(PlacesAutocompleteBasic, _Component);
+
+  function PlacesAutocompleteBasic(props) {
+    _classCallCheck(this, PlacesAutocompleteBasic);
+
+    var _this = _possibleConstructorReturn(this, (PlacesAutocompleteBasic.__proto__ || Object.getPrototypeOf(PlacesAutocompleteBasic)).call(this, props));
+
+    _this.state = { autocompleteItems: [] };
+
+    _this.autocompleteCallback = _this.autocompleteCallback.bind(_this);
+    _this.handleInputKeyDown = _this.handleInputKeyDown.bind(_this);
+    _this.handleInputChange = _this.handleInputChange.bind(_this);
+    return _this;
+  }
+
+  _createClass(PlacesAutocompleteBasic, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.autocompleteService = new google.maps.places.AutocompleteService();
+      this.autocompleteOK = google.maps.places.PlacesServiceStatus.OK;
+    }
+  }, {
+    key: 'autocompleteCallback',
+    value: function autocompleteCallback(predictions, status) {
+      var _this2 = this;
+
+      if (status != this.autocompleteOK) {
+        this.props.onError(status);
+        if (this.props.clearItemsOnError) {
+          this.clearAutocomplete();
+        }
+        return;
+      }
+
+      this.setState({
+        autocompleteItems: predictions.map(function (p, idx) {
+          return {
+            suggestion: p.description,
+            placeId: p.place_id,
+            active: false,
+            index: idx,
+            formattedSuggestion: _this2.formattedSuggestion(p.structured_formatting)
+          };
+        })
+      });
+    }
+  }, {
+    key: 'formattedSuggestion',
+    value: function formattedSuggestion(structured_formatting) {
+      return { mainText: structured_formatting.main_text, secondaryText: structured_formatting.secondary_text };
+    }
+  }, {
+    key: 'clearAutocomplete',
+    value: function clearAutocomplete() {
+      this.setState({ autocompleteItems: [] });
+    }
+  }, {
+    key: 'selectAddress',
+    value: function selectAddress(address, placeId) {
+      this.clearAutocomplete();
+      this.handleSelect(address, placeId);
+    }
+  }, {
+    key: 'handleSelect',
+    value: function handleSelect(address, placeId) {
+      this.props.onSelect ? this.props.onSelect(address, placeId) : this.props.onChange(address);
+    }
+  }, {
+    key: 'getActiveItem',
+    value: function getActiveItem() {
+      return this.state.autocompleteItems.find(function (item) {
+        return item.active;
+      });
+    }
+  }, {
+    key: 'selectActiveItemAtIndex',
+    value: function selectActiveItemAtIndex(index) {
+      var activeName = this.state.autocompleteItems.find(function (item) {
+        return item.index === index;
+      }).suggestion;
+      this.setActiveItemAtIndex(index);
+      this.props.onChange(activeName);
+    }
+  }, {
+    key: 'handleEnterKey',
+    value: function handleEnterKey() {
+      if (this.state.autocompleteItems.length === 0) {
+        return;
+      }
+
+      var activeItem = this.getActiveItem();
+      if (activeItem === undefined) {
+        this.handleEnterKeyWithoutActiveItem();
+      } else {
+        this.selectAddress(activeItem.suggestion, activeItem.placeId);
+      }
+    }
+  }, {
+    key: 'handleEnterKeyWithoutActiveItem',
+    value: function handleEnterKeyWithoutActiveItem() {
+      if (this.props.onEnterKeyDown) {
+        this.props.onEnterKeyDown(this.props.value);
+        this.clearAutocomplete();
+      } else {
+        return; //noop
+      }
+    }
+  }, {
+    key: 'handleDownKey',
+    value: function handleDownKey() {
+      if (this.state.autocompleteItems.length === 0) {
+        return;
+      }
+
+      var activeItem = this.getActiveItem();
+      if (activeItem === undefined) {
+        this.selectActiveItemAtIndex(0);
+      } else {
+        var nextIndex = (activeItem.index + 1) % this.state.autocompleteItems.length;
+        this.selectActiveItemAtIndex(nextIndex);
+      }
+    }
+  }, {
+    key: 'handleUpKey',
+    value: function handleUpKey() {
+      if (this.state.autocompleteItems.length === 0) {
+        return;
+      }
+
+      var activeItem = this.getActiveItem();
+      if (activeItem === undefined) {
+        this.selectActiveItemAtIndex(this.state.autocompleteItems.length - 1);
+      } else {
+        var prevIndex = void 0;
+        if (activeItem.index === 0) {
+          prevIndex = this.state.autocompleteItems.length - 1;
+        } else {
+          prevIndex = (activeItem.index - 1) % this.state.autocompleteItems.length;
+        }
+        this.selectActiveItemAtIndex(prevIndex);
+      }
+    }
+  }, {
+    key: 'handleInputKeyDown',
+    value: function handleInputKeyDown(event) {
+      var ARROW_UP = 38;
+      var ARROW_DOWN = 40;
+      var ENTER_KEY = 13;
+      var ESC_KEY = 27;
+
+      switch (event.keyCode) {
+        case ENTER_KEY:
+          event.preventDefault();
+          this.handleEnterKey();
+          break;
+        case ARROW_DOWN:
+          event.preventDefault(); // prevent the cursor from moving
+          this.handleDownKey();
+          break;
+        case ARROW_UP:
+          event.preventDefault(); // prevent the cursor from moving
+          this.handleUpKey();
+          break;
+        case ESC_KEY:
+          this.clearAutocomplete();
+          break;
+      }
+    }
+  }, {
+    key: 'setActiveItemAtIndex',
+    value: function setActiveItemAtIndex(index) {
+      this.setState({
+        autocompleteItems: this.state.autocompleteItems.map(function (item, idx) {
+          if (idx === index) {
+            return _extends({}, item, { active: true });
+          } else {
+            return _extends({}, item, { active: false });
+          }
+        })
+      });
+    }
+  }, {
+    key: 'handleInputChange',
+    value: function handleInputChange(event) {
+      this.props.onChange(event.target.value);
+      if (!event.target.value) {
+        this.clearAutocomplete();
+        return;
+      }
+      this.autocompleteService.getPlacePredictions(_extends({}, this.props.options, { input: event.target.value }), this.autocompleteCallback);
+    }
+  }, {
+    key: 'autocompleteItemStyle',
+    value: function autocompleteItemStyle(active) {
+      if (active) {
+        return _extends({}, _defaultStyles2.default.autocompleteItemActive, this.props.styles.autocompleteItemActive);
+      } else {
+        return {};
+      }
+    }
+  }, {
+    key: 'renderAutocomplete',
+    value: function renderAutocomplete() {
+      var _this3 = this;
+
+      var autocompleteItems = this.state.autocompleteItems;
+      var styles = this.props.styles;
+
+      if (autocompleteItems.length === 0) {
+        return null;
+      }
+      return _react2.default.createElement(
+        'div',
+        {
+          id: 'PlacesAutocomplete__autocomplete-container',
+          className: this.props.classNames.autocompleteContainer || '',
+          style: _extends({}, _defaultStyles2.default.autocompleteContainer, styles.autocompleteContainer) },
+        autocompleteItems.map(function (p, idx) {
+          return _react2.default.createElement(
+            'div',
+            {
+              key: p.placeId,
+              onMouseOver: function onMouseOver() {
+                return _this3.setActiveItemAtIndex(p.index);
+              },
+              onMouseDown: function onMouseDown() {
+                return _this3.selectAddress(p.suggestion, p.placeId);
+              },
+              style: _extends({}, _defaultStyles2.default.autocompleteItem, styles.autocompleteItem, _this3.autocompleteItemStyle(p.active)) },
+            _this3.props.autocompleteItem({ suggestion: p.suggestion, formattedSuggestion: p.formattedSuggestion })
+          );
+        })
+      );
+    }
+  }, {
+    key: 'renderInput',
+    value: function renderInput() {
+      var _this4 = this;
+
+      var _props = this.props,
+          classNames = _props.classNames,
+          placeholder = _props.placeholder,
+          styles = _props.styles,
+          value = _props.value,
+          autoFocus = _props.autoFocus,
+          inputName = _props.inputName,
+          inputId = _props.inputId;
+
+      return _react2.default.createElement('input', {
+        type: 'text',
+        placeholder: placeholder,
+        className: classNames.input || '',
+        value: value,
+        onChange: this.handleInputChange,
+        onKeyDown: this.handleInputKeyDown,
+        onBlur: function onBlur() {
+          return _this4.clearAutocomplete();
+        },
+        style: styles.input,
+        autoFocus: autoFocus,
+        name: inputName || '',
+        id: inputId || ''
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _props2 = this.props,
+          classNames = _props2.classNames,
+          styles = _props2.styles;
+
+      return _react2.default.createElement(
+        'div',
+        {
+          style: _extends({}, _defaultStyles2.default.root, styles.root),
+          className: classNames.root || '' },
+        this.renderInput(),
+        this.renderAutocomplete()
+      );
+    }
+  }]);
+
+  return PlacesAutocompleteBasic;
+}(_react.Component);
+
+exports.default = PlacesAutocompleteBasic;
+
+/***/ }),
+/* 302 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(6);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _defaultStyles = __webpack_require__(298);
+
+var _defaultStyles2 = _interopRequireDefault(_defaultStyles);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * Copyright (c) 2017 Ken Hibino.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * Licensed under the MIT License (MIT).
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * See https://kenny-hibino.github.io/react-places-autocomplete
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
+
+var PlacesAutocompleteWithTypeAhead = function (_Component) {
+  _inherits(PlacesAutocompleteWithTypeAhead, _Component);
+
+  function PlacesAutocompleteWithTypeAhead(props) {
+    _classCallCheck(this, PlacesAutocompleteWithTypeAhead);
+
+    var _this = _possibleConstructorReturn(this, (PlacesAutocompleteWithTypeAhead.__proto__ || Object.getPrototypeOf(PlacesAutocompleteWithTypeAhead)).call(this, props));
+
+    _this.state = {
+      autocompleteItems: [],
+      firstSuggestion: '',
+      userTypedValue: '',
+      shouldTypeAhead: true
+    };
+
+    _this.autocompleteCallback = _this.autocompleteCallback.bind(_this);
+    _this.handleInputKeyDown = _this.handleInputKeyDown.bind(_this);
+    _this.handleInputChange = _this.handleInputChange.bind(_this);
+    return _this;
+  }
+
+  _createClass(PlacesAutocompleteWithTypeAhead, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.autocompleteService = new google.maps.places.AutocompleteService();
+      this.autocompleteOK = google.maps.places.PlacesServiceStatus.OK;
+      this.autocompleteZeroResult = google.maps.places.PlacesServiceStatus.ZERO_RESULTS;
+    }
+  }, {
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate(prevProps, prevState) {
+      var _state = this.state,
+          firstSuggestion = _state.firstSuggestion,
+          userTypedValue = _state.userTypedValue;
+
+
+      if (userTypedValue.length < prevState.userTypedValue.length) {
+        return; // noop
+      }
+
+      if (this.shouldSoftAutcomplete()) {
+        this.refs.inputField.setSelectionRange(userTypedValue.length, firstSuggestion.length);
+      }
+    }
+  }, {
+    key: 'autocompleteCallback',
+    value: function autocompleteCallback(predictions, status) {
+      var _this2 = this;
+
+      if (status === this.autocompleteZeroResult) {
+        this.setState({
+          autocompleteItems: [],
+          firstSuggestion: ''
+        });
+        return;
+      }
+
+      if (status != this.autocompleteOK) {
+        this.props.onError(status);
+        if (this.props.clearItemsOnError) {
+          this.clearAutocomplete();
+        }
+        return;
+      }
+
+      this.setState({
+        autocompleteItems: predictions.map(function (p, idx) {
+          return {
+            suggestion: p.description,
+            placeId: p.place_id,
+            active: false,
+            index: idx,
+            formattedSuggestion: _this2.formattedSuggestion(p.structured_formatting)
+          };
+        }),
+        firstSuggestion: predictions[0].description
+      });
+
+      this.updateInputValue();
+    }
+  }, {
+    key: 'formattedSuggestion',
+    value: function formattedSuggestion(structured_formatting) {
+      return { mainText: structured_formatting.main_text, secondaryText: structured_formatting.secondary_text };
+    }
+  }, {
+    key: 'clearAutocomplete',
+    value: function clearAutocomplete() {
+      this.setState({ autocompleteItems: [] });
+    }
+  }, {
+    key: 'selectAddress',
+    value: function selectAddress(address, placeId) {
+      this.clearAutocomplete();
+      this.handleSelect(address, placeId);
+    }
+  }, {
+    key: 'handleSelect',
+    value: function handleSelect(address, placeId) {
+      this.props.onSelect ? this.props.onSelect(address, placeId) : this.props.onChange(address);
+    }
+  }, {
+    key: 'handleAutocompleteItemMouseDown',
+    value: function handleAutocompleteItemMouseDown(address, placeId) {
+      this.selectAddress(address, placeId);
+      this.setState({
+        userTypedValue: address
+      });
+    }
+  }, {
+    key: 'getActiveItem',
+    value: function getActiveItem() {
+      return this.state.autocompleteItems.find(function (item) {
+        return item.active;
+      });
+    }
+  }, {
+    key: 'selectActiveItemAtIndex',
+    value: function selectActiveItemAtIndex(index) {
+      var activeName = this.state.autocompleteItems.find(function (item) {
+        return item.index === index;
+      }).suggestion;
+      this.setActiveItemAtIndex(index);
+      this.props.onChange(activeName);
+      this.setState({ userTypedValue: activeName });
+    }
+  }, {
+    key: 'handleEnterKey',
+    value: function handleEnterKey() {
+      if (this.state.autocompleteItems.length === 0) {
+        return;
+      }
+
+      var activeItem = this.getActiveItem();
+      if (activeItem === undefined) {
+        this.handleEnterKeyWithoutActiveItem();
+      } else {
+        this.selectAddress(activeItem.suggestion, activeItem.placeId);
+      }
+
+      this.refs.inputField.focus();
+      this.refs.inputField.setSelectionRange(0, 0);
+      this.setState({
+        userTypedValue: this.props.value
+      });
+    }
+  }, {
+    key: 'handleEnterKeyWithoutActiveItem',
+    value: function handleEnterKeyWithoutActiveItem() {
+      if (this.props.onEnterKeyDown) {
+        this.props.onEnterKeyDown(this.props.value);
+        this.clearAutocomplete();
+      } else {
+        return; //noop
+      }
+    }
+  }, {
+    key: 'handleDownKey',
+    value: function handleDownKey() {
+      if (this.state.autocompleteItems.length === 0) {
+        return;
+      }
+
+      var activeItem = this.getActiveItem();
+      if (activeItem === undefined) {
+        this.selectActiveItemAtIndex(0);
+      } else {
+        var nextIndex = (activeItem.index + 1) % this.state.autocompleteItems.length;
+        this.selectActiveItemAtIndex(nextIndex);
+      }
+    }
+  }, {
+    key: 'handleUpKey',
+    value: function handleUpKey() {
+      if (this.state.autocompleteItems.length === 0) {
+        return;
+      }
+
+      var activeItem = this.getActiveItem();
+      if (activeItem === undefined) {
+        this.selectActiveItemAtIndex(this.state.autocompleteItems.length - 1);
+      } else {
+        var prevIndex = void 0;
+        if (activeItem.index === 0) {
+          prevIndex = this.state.autocompleteItems.length - 1;
+        } else {
+          prevIndex = (activeItem.index - 1) % this.state.autocompleteItems.length;
+        }
+        this.selectActiveItemAtIndex(prevIndex);
+      }
+    }
+  }, {
+    key: 'handleDeleteKey',
+    value: function handleDeleteKey() {
+      var _state2 = this.state,
+          userTypedValue = _state2.userTypedValue,
+          firstSuggestion = _state2.firstSuggestion;
+
+      if (userTypedValue.length === 0) {
+        return; // noop
+      }
+      var selectionString = window.getSelection().toString();
+      var cursorPosition = this.refs.inputField.selectionStart;
+      var isPlainBackSpace = selectionString === firstSuggestion.replace(userTypedValue, '') || selectionString.length === 0;
+
+      if (isPlainBackSpace) {
+        this.setState({
+          userTypedValue: userTypedValue.slice(0, cursorPosition - 1) + userTypedValue.slice(cursorPosition, userTypedValue.length),
+          shouldTypeAhead: false,
+          firstSuggestion: ''
+        });
+      } else {
+        this.setState({
+          userTypedValue: this.props.value.replace(selectionString, ''),
+          shouldTypeAhead: false,
+          firstSuggestion: ''
+        });
+      }
+    }
+  }, {
+    key: 'handleTabKey',
+    value: function handleTabKey() {
+      this.refs.inputField.focus();
+      this.refs.inputField.setSelectionRange(0, 0);
+      this.refs.inputField.blur();
+      this.setState({
+        userTypedValue: this.props.value
+      });
+    }
+  }, {
+    key: 'handleRightLeftKey',
+    value: function handleRightLeftKey() {
+      this.setState({
+        userTypedValue: this.props.value,
+        shouldTypeAhead: false
+      });
+    }
+  }, {
+    key: 'handleDefaultKey',
+    value: function handleDefaultKey(event) {
+      if (event.key.length > 1) {
+        return;
+      }
+      var userTypedValue = this.state.userTypedValue;
+
+      var selectionString = window.getSelection().toString();
+
+      if (selectionString.length === 0) {
+        var cursorPosition = this.refs.inputField.selectionStart;
+        this.setState({
+          userTypedValue: this.props.value.slice(0, cursorPosition) + event.key + this.props.value.slice(cursorPosition, this.props.value.length),
+          shouldTypeAhead: true
+        });
+      } else if (this.props.value === '' + userTypedValue + selectionString) {
+        this.setState({
+          userTypedValue: this.fixCasing(this.state.userTypedValue + event.key),
+          shouldTypeAhead: true
+        });
+      } else {
+        this.setState({
+          userTypedValue: this.props.value.replace(selectionString, event.key),
+          shouldTypeAhead: false
+        });
+      }
+    }
+  }, {
+    key: 'handleInputKeyDown',
+    value: function handleInputKeyDown(event) {
+      var onlyShiftKeyDown = event.shiftKey && event.keyCode === 16;
+      var onlyAltKeyDown = event.altKey && event.keyCode === 18;
+      if (onlyShiftKeyDown || onlyAltKeyDown || event.ctrlKey || event.metaKey) {
+        return; // noop
+      }
+
+      var ARROW_LEFT = 37;
+      var ARROW_UP = 38;
+      var ARROW_RIGHT = 39;
+      var ARROW_DOWN = 40;
+      var ENTER_KEY = 13;
+      var ESC_KEY = 27;
+      var DELETE_KEY = 8;
+      var TAB_KEY = 9;
+
+      switch (event.keyCode) {
+        case ENTER_KEY:
+          event.preventDefault();
+          this.handleEnterKey();
+          break;
+        case ARROW_DOWN:
+          event.preventDefault(); // prevent the cursor from moving
+          this.handleDownKey();
+          break;
+        case ARROW_UP:
+          event.preventDefault(); // prevent the cursor from moving
+          this.handleUpKey();
+          break;
+        case ESC_KEY:
+          this.clearAutocomplete();
+          break;
+        case DELETE_KEY:
+          this.handleDeleteKey();
+          break;
+        case TAB_KEY:
+          this.handleTabKey();
+          break;
+        case ARROW_LEFT:
+        case ARROW_RIGHT:
+          this.handleRightLeftKey();
+          break;
+        default:
+          this.handleDefaultKey(event);
+      }
+    }
+  }, {
+    key: 'fixCasing',
+    value: function fixCasing(newValue) {
+      var firstSuggestion = this.state.firstSuggestion;
+
+      if (firstSuggestion.length === 0) {
+        return newValue;
+      }
+
+      if (this.isMatch(newValue, firstSuggestion)) {
+        return firstSuggestion.substr(0, newValue.length);
+      }
+
+      return newValue;
+    }
+  }, {
+    key: 'setActiveItemAtIndex',
+    value: function setActiveItemAtIndex(index) {
+      this.setState({
+        autocompleteItems: this.state.autocompleteItems.map(function (item, idx) {
+          if (idx === index) {
+            return _extends({}, item, { active: true });
+          } else {
+            return _extends({}, item, { active: false });
+          }
+        })
+      });
+    }
+  }, {
+    key: 'updateInputValue',
+    value: function updateInputValue() {
+      var _state3 = this.state,
+          firstSuggestion = _state3.firstSuggestion,
+          userTypedValue = _state3.userTypedValue;
+
+      if (this.shouldSoftAutcomplete()) {
+        this.props.onChange(firstSuggestion);
+      } else {
+        this.props.onChange(userTypedValue);
+      }
+    }
+  }, {
+    key: 'shouldSoftAutcomplete',
+    value: function shouldSoftAutcomplete() {
+      var _state4 = this.state,
+          firstSuggestion = _state4.firstSuggestion,
+          userTypedValue = _state4.userTypedValue,
+          shouldTypeAhead = _state4.shouldTypeAhead;
+
+      return firstSuggestion !== '' && userTypedValue !== '' && this.isMatch(userTypedValue, firstSuggestion) && shouldTypeAhead;
+    }
+  }, {
+    key: 'handleInputChange',
+    value: function handleInputChange(event) {
+      this.updateInputValue();
+
+      var userTypedValue = this.state.userTypedValue;
+
+      if (userTypedValue.length === 0) {
+        this.clearAutocomplete();
+        return;
+      }
+
+      if (this.state.shouldTypeAhead) {
+        this.autocompleteService.getPlacePredictions(_extends({}, this.props.options, { input: userTypedValue }), this.autocompleteCallback);
+      }
+    }
+  }, {
+    key: 'autocompleteItemStyle',
+    value: function autocompleteItemStyle(active) {
+      if (active) {
+        return _extends({}, _defaultStyles2.default.autocompleteItemActive, this.props.styles.autocompleteItemActive);
+      } else {
+        return {};
+      }
+    }
+  }, {
+    key: 'renderAutocomplete',
+    value: function renderAutocomplete() {
+      var _this3 = this;
+
+      var autocompleteItems = this.state.autocompleteItems;
+      var styles = this.props.styles;
+
+      if (autocompleteItems.length === 0) {
+        return null;
+      }
+      return _react2.default.createElement(
+        'div',
+        {
+          id: 'PlacesAutocomplete__autocomplete-container',
+          className: this.props.classNames.autocompleteContainer || '',
+          style: _extends({}, _defaultStyles2.default.autocompleteContainer, styles.autocompleteContainer) },
+        autocompleteItems.map(function (p, idx) {
+          return _react2.default.createElement(
+            'div',
+            {
+              key: p.placeId,
+              onMouseOver: function onMouseOver() {
+                return _this3.setActiveItemAtIndex(p.index);
+              },
+              onMouseDown: function onMouseDown() {
+                return _this3.handleAutocompleteItemMouseDown(p.suggestion, p.placeId);
+              },
+              style: _extends({}, _defaultStyles2.default.autocompleteItem, styles.autocompleteItem, _this3.autocompleteItemStyle(p.active)) },
+            _this3.props.autocompleteItem({ suggestion: p.suggestion, formattedSuggestion: p.formattedSuggestion })
+          );
+        })
+      );
+    }
+  }, {
+    key: 'isMatch',
+    value: function isMatch(subject, target) {
+      var normalizedSubject = subject.toLowerCase();
+      var normalizedTarget = target.toLowerCase();
+      return normalizedSubject === normalizedTarget.substr(0, subject.length);
+    }
+  }, {
+    key: 'renderInput',
+    value: function renderInput() {
+      var _this4 = this;
+
+      var _state5 = this.state,
+          firstSuggestion = _state5.firstSuggestion,
+          userTypedValue = _state5.userTypedValue;
+      var _props = this.props,
+          classNames = _props.classNames,
+          placeholder = _props.placeholder,
+          styles = _props.styles,
+          value = _props.value,
+          autoFocus = _props.autoFocus,
+          inputName = _props.inputName,
+          inputId = _props.inputId;
+
+      return _react2.default.createElement('input', {
+        type: 'text',
+        placeholder: placeholder,
+        className: classNames.input || '',
+        value: value,
+        onChange: this.handleInputChange,
+        onKeyDown: this.handleInputKeyDown,
+        onBlur: function onBlur() {
+          return _this4.clearAutocomplete();
+        },
+        style: styles.input,
+        autoFocus: autoFocus,
+        name: inputName || '',
+        id: inputId || '',
+        ref: 'inputField'
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _props2 = this.props,
+          classNames = _props2.classNames,
+          styles = _props2.styles;
+
+      return _react2.default.createElement(
+        'div',
+        {
+          style: _extends({}, _defaultStyles2.default.root, styles.root),
+          className: classNames.root || '' },
+        this.renderInput(),
+        this.renderAutocomplete()
+      );
+    }
+  }]);
+
+  return PlacesAutocompleteWithTypeAhead;
+}(_react.Component);
+
+exports.default = PlacesAutocompleteWithTypeAhead;
+
+/***/ }),
+/* 303 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+// Detect mobile browser
+var mobileCheck = exports.mobileCheck = function mobileCheck() {
+  var check = false;
+  (function (a) {
+    if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) check = true;
+  })(navigator.userAgent || navigator.vendor || window.opera);
+  return check;
+};
+
+/***/ }),
+/* 304 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.geocodeByPlaceId = exports.geocodeByAddress = undefined;
+
+var _PlacesAutocomplete = __webpack_require__(300);
+
+var _PlacesAutocomplete2 = _interopRequireDefault(_PlacesAutocomplete);
+
+var _utils = __webpack_require__(305);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.geocodeByAddress = _utils.geocodeByAddress;
+exports.geocodeByPlaceId = _utils.geocodeByPlaceId;
+exports.default = _PlacesAutocomplete2.default;
+
+/***/ }),
+/* 305 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var geocodeByAddress = exports.geocodeByAddress = function geocodeByAddress(address, callback) {
+  var geocoder = new google.maps.Geocoder();
+  var OK = google.maps.GeocoderStatus.OK;
+
+  geocoder.geocode({ address: address }, function (results, status) {
+    if (status !== OK) {
+      callback({ status: status }, null, results);
+      return;
+    }
+
+    var latLng = {
+      lat: results[0].geometry.location.lat(),
+      lng: results[0].geometry.location.lng()
+    };
+
+    callback(null, latLng, results);
+  });
+};
+
+var geocodeByPlaceId = exports.geocodeByPlaceId = function geocodeByPlaceId(placeId, callback) {
+  var geocoder = new google.maps.Geocoder();
+  var OK = google.maps.GeocoderStatus.OK;
+
+  geocoder.geocode({ placeId: placeId }, function (results, status) {
+    if (status !== OK) {
+      callback({ status: status }, null, null);
+      return;
+    }
+
+    var latLng = {
+      lat: results[0].geometry.location.lat(),
+      lng: results[0].geometry.location.lng()
+    };
+
+    callback(null, latLng, results);
+  });
+};
+
+/***/ }),
+/* 306 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(74)();
+// imports
+
+
+// module
+exports.push([module.i, ".destination-search {\n  background: #ddd;\n  padding: 5px 10px;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-around; }\n  .destination-search input {\n    width: 100%;\n    height: 30px; }\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 307 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(306);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(119)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/sass-loader/lib/loader.js!./destination_search.scss", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/sass-loader/lib/loader.js!./destination_search.scss");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
 
 /***/ })
 /******/ ]);

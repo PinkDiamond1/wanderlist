@@ -1,0 +1,15 @@
+.destination-search {
+  background: #ddd;
+  padding: 5px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+
+  .form-group {
+  }
+
+  input {
+    width: 100%;
+    height: 30px;
+  }
+}
