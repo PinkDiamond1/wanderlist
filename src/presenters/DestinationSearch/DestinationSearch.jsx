@@ -79,6 +79,7 @@ export default class DestinationSearch extends React.Component {
 
     return (
       <div className="destination-search">
+        <span className="destination-search__icon">🔍</span>
         <PlacesAutocomplete
           value={this.state.address}
           onChange={this.handleChange}
@@ -86,7 +87,7 @@ export default class DestinationSearch extends React.Component {
           classNames={cssClasses}
           autocompleteItem={AutocompleteItem}
           autoFocus={true}
-          placeholder="Search Places"
+          placeholder="Add a destination"
           hideLabel={true}
           inputName="Demo__input"
           onEnterKeyDown={this.handleSelect}

@@ -12,7 +12,7 @@ export default class Login extends Component {
     super(props)
     this.handleClick = this.handleClick.bind(this)
     this.handleInput = this.handleInput.bind(this)
-    this.state = { input: "" }
+    this.state = { input: "", loading: false, error: false }
   }
 
   componentDidMount() {
@@ -34,12 +34,16 @@ export default class Login extends Component {
   }
 
   handleClick() {
+    this.setState({ loading: true, error: false })
     request
       .post('https://young-beyond-8772.herokuapp.com/auth')
       .set('Content-Type', 'application/json')
       .send(JSON.stringify({ name: this.state.input }))
       .end((err, res) => {
-        if(err) { throw(err) }
+        if(err) {
+          this.setState({ loading: false, error: true })
+          throw(err)
+        }
         const data = JSON.parse(res.text)
         store.dispatch(setCurrentUser(data))
         try {
@@ -67,11 +71,17 @@ export default class Login extends Component {
             <h2 className="login__h2">a friendly way to share travel destinations</h2>
           </div>
           <div>
-            <input className="login__input"
+            <input className={this.state.error ? 'shake login__input' : 'login__input'}
               onChange={this.handleInput}
               value={this.state.input}
               placeholder="enter your name to continue" />
-            <div className="button--login" onClick={this.handleClick}>Login</div>
+            <div className="button--login" onClick={this.handleClick}>
+              {this.state.loading ? (
+                <i className="fa fa-spinner fa-pulse fa-1x fa-fw Demo__spinner" />
+              ) : (
+                'Login'
+              )}
+            </div>
           </div>
         </div>
       </div>

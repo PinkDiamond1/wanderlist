@@ -125,7 +125,7 @@ export default class Dashboard extends Component {
         <div className="dashboard__side-menu" style={this.state.sideMenuToggled ? { transform: 'translateX(-150px)' } : null}>
           <div>
             {this.state.users.filter((user) => user.id !== store.getState().currentUser.id).map((friend) => (
-              <Link onClick={this.toggleMenu} className="link--friend" to={'/travelers/' + friend.id} key={friend.id}><span className="fa fa-user"></span> {friend.name}</Link>
+              <Link onClick={this.toggleMenu} className="link--friend" to={'/travelers/' + friend.id} key={friend.id}><span>👦</span> {friend.name}</Link>
             ))}
           </div>
           <div onClick={this.logout} className="button--logout"><span className="fa fa-sign-out"></span> Logout</div>

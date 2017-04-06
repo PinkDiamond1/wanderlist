@@ -13,7 +13,8 @@ export default ({ destinations, handleClick, handleDelete }) => {
           handleClick={() => handleClick(destination.name)}
           handleDelete={() => handleDelete(destination.name)}
           key={destination.name}
-          name={destination.name} />
+          name={destination.name}
+          visited={false} />
       ))}
       <h2 className="dashboard__h2">Have been to:</h2>
       {visited.map((destination) => (
@@ -21,7 +22,8 @@ export default ({ destinations, handleClick, handleDelete }) => {
           handleClick={() => handleClick(destination.name)}
           handleDelete={() => handleDelete(destination.name)}
           key={destination.name}
-          name={destination.name} />
+          name={destination.name}
+          visited={true} />
       ))}
     </div>
   )
