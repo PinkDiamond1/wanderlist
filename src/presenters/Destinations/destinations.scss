@@ -7,3 +7,15 @@
     box-shadow: 0px 2px 1px rgba(0,0,0,0.2)
   }
 }
+
+
+// MEDIA QUERIES
+
+@media screen and (min-width: 768px) {
+  body .destinations {
+    &__section {
+      width: calc(50% - 4px);
+      float: left;
+    }
+  }
+}

@@ -14164,6 +14164,7 @@ var Dashboard = function (_Component) {
     _this.toggleMenu = _this.toggleMenu.bind(_this);
     _this.toggleVisited = _this.toggleVisited.bind(_this);
     _this.deleteDestination = _this.deleteDestination.bind(_this);
+    _this.closeMenu = _this.closeMenu.bind(_this);
     _this.state = { users: [], sideMenuToggled: false };
     return _this;
   }
@@ -14225,6 +14226,11 @@ var Dashboard = function (_Component) {
     key: 'toggleMenu',
     value: function toggleMenu() {
       this.setState({ sideMenuToggled: !this.state.sideMenuToggled });
+    }
+  }, {
+    key: 'closeMenu',
+    value: function closeMenu() {
+      this.setState({ sideMenuToggled: false });
     }
   }, {
     key: 'deleteDestination',
@@ -14309,11 +14315,15 @@ var Dashboard = function (_Component) {
             _react2.default.createElement('div', { className: 'fa fa-bars' })
           )
         ),
-        _react2.default.createElement(_DestinationSearch2.default, null),
         _react2.default.createElement(
           'div',
-          { className: 'dashboard__content', style: this.state.sideMenuToggled ? { transform: 'translateX(-150px)' } : null },
-          this.isOwner() ? _react2.default.createElement(_Destinations2.default, { handleDelete: this.deleteDestination, handleClick: this.toggleVisited, destinations: this.currentDestinations() }) : _react2.default.createElement(_FriendDestinations2.default, { destinations: this.currentDestinations() })
+          { className: 'dashboard__content', onClick: this.closeMenu },
+          _react2.default.createElement(_DestinationSearch2.default, null),
+          _react2.default.createElement(
+            'div',
+            { className: 'dashboard__content', style: this.state.sideMenuToggled ? { transform: 'translateX(-150px)' } : null },
+            this.isOwner() ? _react2.default.createElement(_Destinations2.default, { handleDelete: this.deleteDestination, handleClick: this.toggleVisited, destinations: this.currentDestinations() }) : _react2.default.createElement(_FriendDestinations2.default, { destinations: this.currentDestinations() })
+          )
         ),
         _react2.default.createElement(
           'div',
@@ -14321,6 +14331,11 @@ var Dashboard = function (_Component) {
           _react2.default.createElement(
             'div',
             null,
+            _react2.default.createElement(
+              'div',
+              { className: 'dashboard__side-menu__title' },
+              'Fellow Travelers'
+            ),
             this.state.users.filter(function (user) {
               return user.id !== _store2.default.getState().currentUser.id;
             }).map(function (friend) {
@@ -14452,7 +14467,6 @@ var Login = function (_Component) {
       return _react2.default.createElement(
         'div',
         { className: 'login', style: { backgroundImage: 'url(' + img + ')' } },
-        _react2.default.createElement('div', { className: 'login__backdrop' }),
         _react2.default.createElement(
           'div',
           { className: 'login__container' },
@@ -14936,7 +14950,7 @@ exports = module.exports = __webpack_require__(29)();
 
 
 // module
-exports.push([module.i, ".dashboard {\n  height: 100%; }\n  .dashboard__h2 {\n    font-size: 16px;\n    margin-left: 10px;\n    color: #525d80;\n    font-family: 'Open Sans', sans-serif; }\n  .dashboard__content {\n    top: 40px;\n    left: 0;\n    width: 100%;\n    transition: transform 0.3s ease;\n    height: 100%;\n    background: #9a9a9a;\n    overflow: auto; }\n  .dashboard__menu {\n    background: #384C7A;\n    color: #fff;\n    width: 100%;\n    height: 40px;\n    text-align: center;\n    line-height: 40px;\n    z-index: 100;\n    display: flex;\n    justify-content: space-between;\n    padding: 0 5px; }\n  .dashboard__menu-title {\n    text-transform: capitalize; }\n  .dashboard__button {\n    margin-right: 5px;\n    cursor: pointer; }\n  .dashboard__back-button {\n    font-size: 10px;\n    text-align: left;\n    color: #fff;\n    text-decoration: none;\n    cursor: pointer; }\n  .dashboard__side-menu {\n    height: calc(100% - 80px);\n    position: absolute;\n    top: 80px;\n    background: #384C7A;\n    right: -100%;\n    width: 100%;\n    color: #fff;\n    z-index: 10;\n    transition: transform 0.3s ease;\n    display: flex;\n    flex-direction: column;\n    justify-content: space-between; }\n  .dashboard .emoji {\n    font-size: 18px; }\n\n.link--friend {\n  padding: 10px;\n  display: block;\n  color: #fff;\n  text-decoration: none;\n  text-transform: capitalize; }\n\n.button--logout {\n  position: relative;\n  bottom: 0;\n  left: 0;\n  padding: 10px; }\n", ""]);
+exports.push([module.i, ".dashboard {\n  height: 100%; }\n  .dashboard__h2 {\n    font-size: 16px;\n    margin-left: 10px;\n    color: #525d80;\n    font-family: 'Open Sans', sans-serif; }\n  .dashboard__content {\n    top: 40px;\n    left: 0;\n    width: 100%;\n    transition: transform 0.3s ease;\n    height: 100%;\n    background: #9a9a9a;\n    overflow: auto; }\n  .dashboard__menu {\n    background: #384C7A;\n    color: #fff;\n    width: 100%;\n    height: 40px;\n    text-align: center;\n    line-height: 40px;\n    z-index: 100;\n    display: flex;\n    justify-content: space-between;\n    padding: 0 5px; }\n  .dashboard__menu-title {\n    text-transform: capitalize; }\n  .dashboard__button {\n    margin-right: 5px;\n    cursor: pointer; }\n  .dashboard__back-button {\n    font-size: 10px;\n    text-align: left;\n    color: #fff;\n    text-decoration: none;\n    cursor: pointer; }\n  .dashboard__side-menu {\n    height: calc(100% - 80px);\n    position: absolute;\n    top: 80px;\n    background: linear-gradient(0deg, #222e4a, #384C7A);\n    right: -100%;\n    width: 100%;\n    color: #fff;\n    z-index: 10;\n    transition: transform 0.3s ease;\n    display: flex;\n    flex-direction: column;\n    justify-content: space-between; }\n    .dashboard__side-menu__title {\n      padding: 10px; }\n  .dashboard .emoji {\n    font-size: 18px; }\n\n.link--friend {\n  padding: 10px;\n  display: block;\n  color: #fff;\n  text-decoration: none;\n  text-transform: capitalize;\n  transition: 0.15s; }\n  .link--friend:hover {\n    background: #FF5A5F; }\n\n.button--logout {\n  position: relative;\n  bottom: 0;\n  left: 0;\n  padding: 15px;\n  transition: 0.15s;\n  cursor: pointer; }\n  .button--logout:hover {\n    background: #FF5A5F; }\n", ""]);
 
 // exports
 
@@ -14950,7 +14964,7 @@ exports = module.exports = __webpack_require__(29)();
 
 
 // module
-exports.push([module.i, ".login {\n  height: 100%;\n  width: 100%;\n  overflow: auto;\n  background-size: cover; }\n  .login__backdrop {\n    background: #000;\n    opacity: 0;\n    width: 100%;\n    height: 100%;\n    position: absolute;\n    top: 0;\n    left: 0;\n    z-index: 0; }\n  .login__container {\n    z-index: 10;\n    position: relative;\n    padding: 30px;\n    text-align: center;\n    height: 100%;\n    width: 100%;\n    display: flex;\n    flex-direction: column;\n    justify-content: space-between; }\n  .login__h1 {\n    font-family: 'Scada', 'Open Sans', sans-serif;\n    font-size: 42px;\n    letter-spacing: 3.5px;\n    text-align: center;\n    color: #fff;\n    font-weight: 300;\n    text-transform: uppercase;\n    margin-bottom: 20px; }\n  .login__h2 {\n    font-family: 'Open Sans', sans-serif;\n    font-size: 16px;\n    text-align: center;\n    color: #ddd;\n    font-weight: 400; }\n  .login__input {\n    border: none;\n    border-bottom: 1px solid #fff;\n    background: none;\n    box-shadow: none;\n    font-family: 'Open Sans', sans-serif;\n    padding: 10px;\n    text-align: center;\n    width: 100%;\n    margin-bottom: 20px;\n    font-size: 18px;\n    font-weight: 400;\n    color: #fff;\n    background: rgba(0, 0, 0, 0.2); }\n    .login__input:focus {\n      outline: none;\n      background: rgba(0, 0, 0, 0.4);\n      transition: 0.3s;\n      will-change: background; }\n      .login__input:focus::-webkit-input-placeholder {\n        color: transparent; }\n    .login__input::-webkit-input-placeholder {\n      color: #ddd;\n      font-weight: 300;\n      font-weight: 400;\n      font-family: 'Open Sans', sans-serif;\n      font-size: 16px; }\n\n.button--login {\n  background: #FF5A5F;\n  color: #fff;\n  font-family: 'Open Sans';\n  font-size: 18px;\n  padding: 10px;\n  width: 100%;\n  position: relative;\n  bottom: 0;\n  left: 0; }\n\n.shake {\n  animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;\n  transform: translateX(0, 0, 0); }\n\n@keyframes shake {\n  10%, 90% {\n    transform: translateX(-1px); }\n  20%, 80% {\n    transform: translateX(1px); }\n  30%, 50%, 70% {\n    transform: translateX(-3px); }\n  40%, 60% {\n    transform: translateX(2px); } }\n", ""]);
+exports.push([module.i, ".login {\n  height: 100%;\n  width: 100%;\n  overflow: auto;\n  background-size: cover; }\n  .login__container {\n    z-index: 10;\n    position: relative;\n    padding: 30px;\n    text-align: center;\n    height: 100%;\n    width: 100%;\n    display: flex;\n    flex-direction: column;\n    justify-content: space-between;\n    max-width: 400px;\n    margin: 0 auto; }\n  .login__h1 {\n    font-family: 'Scada', 'Open Sans', sans-serif;\n    font-size: 42px;\n    letter-spacing: 3.5px;\n    text-align: center;\n    color: #fff;\n    font-weight: 300;\n    text-transform: uppercase;\n    margin-bottom: 20px; }\n  .login__h2 {\n    font-family: 'Open Sans', sans-serif;\n    font-size: 16px;\n    text-align: center;\n    color: #ddd;\n    font-weight: 400; }\n  .login__input {\n    border: none;\n    border-bottom: 1px solid #fff;\n    background: none;\n    box-shadow: none;\n    font-family: 'Open Sans', sans-serif;\n    padding: 10px;\n    text-align: center;\n    width: 100%;\n    margin-bottom: 20px;\n    font-size: 18px;\n    font-weight: 400;\n    color: #fff;\n    background: rgba(0, 0, 0, 0.2); }\n    .login__input:focus {\n      outline: none;\n      background: rgba(0, 0, 0, 0.4);\n      transition: 0.3s;\n      will-change: background; }\n      .login__input:focus::-webkit-input-placeholder {\n        color: transparent; }\n    .login__input::-webkit-input-placeholder {\n      color: #ddd;\n      font-weight: 300;\n      font-weight: 400;\n      font-family: 'Open Sans', sans-serif;\n      font-size: 16px; }\n\n.button--login {\n  background: #FF5A5F;\n  color: #fff;\n  font-family: 'Open Sans';\n  font-size: 18px;\n  padding: 10px;\n  width: 100%;\n  position: relative;\n  bottom: 0;\n  left: 0; }\n\n.shake {\n  animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;\n  transform: translateX(0, 0, 0); }\n\n@keyframes shake {\n  10%, 90% {\n    transform: translateX(-1px); }\n  20%, 80% {\n    transform: translateX(1px); }\n  30%, 50%, 70% {\n    transform: translateX(-3px); }\n  40%, 60% {\n    transform: translateX(2px); } }\n\n@media screen and (min-width: 768px) {\n  body .login__h1 {\n    font-size: 60px; } }\n", ""]);
 
 // exports
 
@@ -14964,7 +14978,7 @@ exports = module.exports = __webpack_require__(29)();
 
 
 // module
-exports.push([module.i, ".destination {\n  width: calc(100% - 4px);\n  margin: 2px;\n  padding: 15px;\n  display: flex;\n  color: #fff;\n  border-bottom: 1px solid #ccc;\n  font-family: 'Open Sans', sans-serif;\n  justify-content: space-between;\n  color: #555;\n  font-size: 16px; }\n  .destination:last-child {\n    border: none; }\n\n.button--checkbox {\n  width: 18px;\n  height: 18px;\n  border: 1px solid #ccc;\n  border-radius: 2px;\n  margin-right: 10px;\n  background: #fff;\n  margin-top: 2px;\n  cursor: pointer; }\n  .button--checkbox:hover {\n    background: #8AA2A9;\n    transition: 0.15s; }\n\n.button--checked {\n  width: 20px;\n  height: 20px;\n  margin-right: 10px;\n  font-size: 18px;\n  margin-top: -2px;\n  cursor: pointer; }\n  .button--checked:hover {\n    opacity: 0.7;\n    transition: 0.15s; }\n\n.button--delete {\n  margin-top: 2px;\n  color: #999; }\n", ""]);
+exports.push([module.i, ".destination {\n  width: calc(100% - 4px);\n  margin: 2px;\n  padding: 15px;\n  display: flex;\n  color: #fff;\n  border-bottom: 1px solid #ccc;\n  font-family: 'Open Sans', sans-serif;\n  justify-content: space-between;\n  color: #555;\n  font-size: 16px; }\n  .destination:last-child {\n    border: none; }\n\n.button--checkbox {\n  width: 18px;\n  height: 18px;\n  border: 1px solid #ccc;\n  border-radius: 2px;\n  margin-right: 10px;\n  background: #fff;\n  margin-top: 2px;\n  cursor: pointer;\n  transition: 0.15s; }\n  .button--checkbox:hover {\n    background: #384C7A;\n    opacity: 0.7; }\n\n.button--checked {\n  width: 20px;\n  height: 20px;\n  margin-right: 10px;\n  font-size: 18px;\n  margin-top: -2px;\n  cursor: pointer; }\n  .button--checked:hover {\n    opacity: 0.65;\n    transition: 0.15s; }\n\n.button--delete {\n  margin-top: 2px;\n  color: #999;\n  cursor: pointer;\n  transition: 0.15s; }\n  .button--delete:hover {\n    color: #FF5A5F; }\n", ""]);
 
 // exports
 
@@ -31925,7 +31939,7 @@ exports = module.exports = __webpack_require__(29)();
 
 
 // module
-exports.push([module.i, ".destinations__section {\n  background: #fff;\n  overflow: auto;\n  margin: 2px;\n  padding-bottom: 3px;\n  box-shadow: 0px 2px 1px rgba(0, 0, 0, 0.2); }\n", ""]);
+exports.push([module.i, ".destinations__section {\n  background: #fff;\n  overflow: auto;\n  margin: 2px;\n  padding-bottom: 3px;\n  box-shadow: 0px 2px 1px rgba(0, 0, 0, 0.2); }\n\n@media screen and (min-width: 768px) {\n  body .destinations__section {\n    width: calc(50% - 4px);\n    float: left; } }\n", ""]);
 
 // exports
 

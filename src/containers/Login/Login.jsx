@@ -53,7 +53,6 @@ export default class Login extends Component {
   render() {
     return (
       <div className="login" style={{backgroundImage: 'url(' + img + ')'}}>
-        <div className="login__backdrop"></div>
         <div className="login__container">
           <div>
             <h1 className="login__h1">Wanderlist</h1>

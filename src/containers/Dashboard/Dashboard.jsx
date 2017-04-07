@@ -15,6 +15,7 @@ export default class Dashboard extends Component {
     this.toggleMenu = this.toggleMenu.bind(this)
     this.toggleVisited = this.toggleVisited.bind(this)
     this.deleteDestination = this.deleteDestination.bind(this)
+    this.closeMenu = this.closeMenu.bind(this)
     this.state = { users: [], sideMenuToggled: false }
   }
 
@@ -58,6 +59,10 @@ export default class Dashboard extends Component {
 
   toggleMenu() {
     this.setState({ sideMenuToggled: !this.state.sideMenuToggled })
+  }
+
+  closeMenu() {
+    this.setState({ sideMenuToggled: false })
   }
 
   deleteDestination(name) {
@@ -104,19 +109,21 @@ export default class Dashboard extends Component {
             <div className="fa fa-bars"></div>
           </div>
         </div>
+        <div className="dashboard__content" onClick={this.closeMenu}>
+          <DestinationSearch />
 
-        <DestinationSearch />
-
-        <div className="dashboard__content" style={this.state.sideMenuToggled ? { transform: 'translateX(-150px)' } : null}>
-          {this.isOwner() ? (
-            <Destinations handleDelete={this.deleteDestination} handleClick={this.toggleVisited} destinations={this.currentDestinations()} />
-          ) : (
-            <FriendDestinations destinations={this.currentDestinations()} />
-          )}
+          <div className="dashboard__content" style={this.state.sideMenuToggled ? { transform: 'translateX(-150px)' } : null}>
+            {this.isOwner() ? (
+              <Destinations handleDelete={this.deleteDestination} handleClick={this.toggleVisited} destinations={this.currentDestinations()} />
+            ) : (
+              <FriendDestinations destinations={this.currentDestinations()} />
+            )}
+          </div>
         </div>
 
         <div className="dashboard__side-menu" style={this.state.sideMenuToggled ? { transform: 'translateX(-150px)' } : null}>
           <div>
+            <div className="dashboard__side-menu__title">Fellow Travelers</div>
             {this.state.users.filter((user) => user.id !== store.getState().currentUser.id).map((friend) => (
               <Link onClick={this.toggleMenu} className="link--friend" to={'/travelers/' + friend.id} key={friend.id}><span>👦</span> {friend.name}</Link>
             ))}

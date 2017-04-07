@@ -4,17 +4,6 @@
   overflow: auto;
   background-size: cover;
 
-  &__backdrop {
-    background: #000;
-    opacity: 0;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 0;
-  }
-
   &__container {
     z-index: 10;
     position: relative;
@@ -25,6 +14,8 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    max-width: 400px;
+    margin: 0 auto;
   }
 
   &__h1 {
@@ -93,6 +84,8 @@
   left: 0;
 }
 
+// ANIMATIONS
+
 .shake {
   animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
   transform: translateX(0, 0, 0);
@@ -113,5 +106,15 @@
 
   40%, 60% {
     transform: translateX(2px);
+  }
+}
+
+// MEDIA QUERIES
+
+@media screen and (min-width: 768px) {
+  body .login {
+    &__h1 {
+      font-size: 60px;
+    }
   }
 }
