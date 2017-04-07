@@ -20,17 +20,6 @@ export default class Login extends Component {
     if(currentUser && currentUser.id && currentUser.token) {
       browserHistory.push('/travelers/' + currentUser.id)
     }
-
-    // localStorage.setItem('userData', data)
-    // request.get('https://young-beyond-8772.herokuapp.com/travelers')
-    //           .set('Authorization', 'Token token=' + data.token)
-    //           .end((err, res) => {
-    //             if(err) {
-    //               throw(err);
-    //             }
-
-    //             debugger
-    //           })
   }
 
   handleClick() {

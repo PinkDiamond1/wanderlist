@@ -42,7 +42,7 @@
     font-family: 'Open Sans', sans-serif;
     font-size: 16px;
     text-align: center;
-    color: #cfcfcf;
+    color: #ddd;
     font-weight: 400;
   }
 
@@ -59,13 +59,20 @@
     font-size: 18px;
     font-weight: 400;
     color: #fff;
+    background: rgba(0,0,0,0.2);
 
     &:focus {
       outline: none;
+      background: rgba(0,0,0,0.4);
+      transition: 0.3s;
+      will-change: background;
+      &::-webkit-input-placeholder {
+        color: transparent;
+      }
     }
 
     &::-webkit-input-placeholder {
-      color: #cfcfcf;
+      color: #ddd;
       font-weight: 300;
       font-weight: 400;
       font-family: 'Open Sans', sans-serif;

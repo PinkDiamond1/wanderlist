@@ -20,7 +20,7 @@ export default ({ destinations, handleClick, handleDelete }) => {
         ))}
       </div>
       <div className="destinations__section">
-        <h2 className="dashboard__h2"><span clasName="emoji">😎</span> Have been to:</h2>
+        <h2 className="dashboard__h2"><span className="emoji">😎</span> Have been to:</h2>
         {visited.map((destination) => (
           <Destination
             handleClick={() => handleClick(destination.name)}

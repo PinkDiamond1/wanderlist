@@ -8,14 +8,14 @@ export const setCurrentUser = (data) => ({
   payload: data
 })
 
-export const setUsers = (data) => ({
-  type: GET_USERS,
-  payload: data
-})
-
 export const logout = () => ({
   type: LOGOUT,
   payload: null
+})
+
+export const setUsers = (data) => ({
+  type: GET_USERS,
+  payload: data
 })
 
 export const addDestination = (data) => ({

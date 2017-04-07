@@ -14,8 +14,6 @@ export default class DestinationSearch extends React.Component {
     }
     this.handleSelect = this.handleSelect.bind(this)
     this.handleChange = this.handleChange.bind(this)
-    this.renderGeocodeFailure = this.renderGeocodeFailure.bind(this)
-    this.renderGeocodeSuccess = this.renderGeocodeSuccess.bind(this)
   }
 
   handleSelect(address) {
@@ -24,21 +22,6 @@ export default class DestinationSearch extends React.Component {
     })
 
     store.dispatch(addDestination({ address: address, userId: store.getState().currentUser.id }))
-
-    // geocodeByAddress(address,  (err, { lat, lng }) => {
-    //   if (err) {
-    //     console.log('Oh no!', err)
-    //     this.setState({
-    //       geocodeResults: this.renderGeocodeFailure(err),
-    //       loading: false
-    //     })
-    //   }
-    //   console.log(`Yay! got latitude and longitude for ${address}`, { lat, lng })
-    //   this.setState({
-    //     geocodeResults: this.renderGeocodeSuccess(lat, lng),
-    //     loading: false
-    //   })
-    // })
   }
 
   handleChange(address) {
@@ -47,18 +30,6 @@ export default class DestinationSearch extends React.Component {
       geocodeResults: null
     })
 
-  }
-
-  renderGeocodeFailure(err) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        <strong>Error!</strong> {err}
-      </div>
-    )
-  }
-
-  renderGeocodeSuccess(lat, lng) {
-    // debugger
   }
 
   render() {

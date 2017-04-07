@@ -1,13 +1,6 @@
 import { combineReducers } from 'redux'
 import { LOGIN, GET_USERS, LOGOUT, ADD_DESTINATION } from './actions.js'
-
-const indexOfObj = (array, block) => {
-  for(var i = 0; i < array.length; i++) {
-    if(block(array[i])) { return i }
-  }
-
-  return -1
-}
+import { indexOfObj } from 'helpers'
 
 export function currentUser(state = {}, action) {
   switch(action.type) {

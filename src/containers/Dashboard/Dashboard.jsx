@@ -6,15 +6,8 @@ import request from 'superagent'
 import Destinations from 'presenters/Destinations/Destinations.jsx'
 import FriendDestinations from 'presenters/Destinations/FriendDestinations.jsx'
 import { Link, browserHistory } from 'react-router'
-import DestinationSearch from 'presenters/DestinationSearch/DestinationSearch.jsx'
-
-const indexOfObj = (array, block) => {
-  for(var i = 0; i < array.length; i++) {
-    if(block(array[i])) { return i }
-  }
-
-  return -1
-}
+import DestinationSearch from 'containers/DestinationSearch/DestinationSearch.jsx'
+import { indexOfObj } from 'helpers'
 
 export default class Dashboard extends Component {
   constructor(props) {
