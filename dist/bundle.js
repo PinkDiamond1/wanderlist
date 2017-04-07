@@ -14739,13 +14739,13 @@ var Dashboard = function (_Component) {
               _reactRouter.Link,
               { className: 'dashboard__back-button', to: '/travelers/' + _store2.default.getState().currentUser.id },
               _react2.default.createElement('span', { className: 'fa fa-chevron-left' }),
-              ' Me'
+              ' \uD83C\uDFE0'
             )
           ),
           _react2.default.createElement(
             'div',
             { className: 'dashboard__menu-title' },
-            this.isOwner() ? 'My Destinations' : this.state.users.filter(function (user) {
+            this.isOwner() ? '🏠 My Destinations' : '👦 ' + this.state.users.filter(function (user) {
               return user.id === parseInt(_this7.props.params.id);
             })[0].name + "'s Destinations"
           ),
@@ -14840,7 +14840,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var img = 'dist/' + __webpack_require__(163);
+var img = 'dist/' + __webpack_require__(310);
 
 var Login = function (_Component) {
   _inherits(Login, _Component);
@@ -14908,7 +14908,7 @@ var Login = function (_Component) {
     value: function render() {
       return _react2.default.createElement(
         'div',
-        { className: 'login', style: { background: 'url(' + img + ')' } },
+        { className: 'login', style: { backgroundImage: 'url(' + img + ')' } },
         _react2.default.createElement('div', { className: 'login__backdrop' }),
         _react2.default.createElement(
           'div',
@@ -15250,6 +15250,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _destinations = __webpack_require__(312);
+
+var _destinations2 = _interopRequireDefault(_destinations);
+
 var _react = __webpack_require__(4);
 
 var _react2 = _interopRequireDefault(_react);
@@ -15277,41 +15281,59 @@ exports.default = function (_ref) {
   });
   return _react2.default.createElement(
     'div',
-    null,
+    { className: 'destinations' },
     _react2.default.createElement(
-      'h2',
-      { className: 'dashboard__h2' },
-      'Want to go:'
+      'div',
+      { className: 'destinations__section' },
+      _react2.default.createElement(
+        'h2',
+        { className: 'dashboard__h2' },
+        _react2.default.createElement(
+          'span',
+          { className: 'emoji' },
+          '\uD83D\uDE42'
+        ),
+        ' Want to go:'
+      ),
+      unvisited.map(function (destination) {
+        return _react2.default.createElement(_Destination2.default, {
+          handleClick: function handleClick() {
+            return _handleClick(destination.name);
+          },
+          handleDelete: function handleDelete() {
+            return _handleDelete(destination.name);
+          },
+          key: destination.name,
+          name: destination.name,
+          visited: false });
+      })
     ),
-    unvisited.map(function (destination) {
-      return _react2.default.createElement(_Destination2.default, {
-        handleClick: function handleClick() {
-          return _handleClick(destination.name);
-        },
-        handleDelete: function handleDelete() {
-          return _handleDelete(destination.name);
-        },
-        key: destination.name,
-        name: destination.name,
-        visited: false });
-    }),
     _react2.default.createElement(
-      'h2',
-      { className: 'dashboard__h2' },
-      'Have been to:'
-    ),
-    visited.map(function (destination) {
-      return _react2.default.createElement(_Destination2.default, {
-        handleClick: function handleClick() {
-          return _handleClick(destination.name);
-        },
-        handleDelete: function handleDelete() {
-          return _handleDelete(destination.name);
-        },
-        key: destination.name,
-        name: destination.name,
-        visited: true });
-    })
+      'div',
+      { className: 'destinations__section' },
+      _react2.default.createElement(
+        'h2',
+        { className: 'dashboard__h2' },
+        _react2.default.createElement(
+          'span',
+          { clasName: 'emoji' },
+          '\uD83D\uDE0E'
+        ),
+        ' Have been to:'
+      ),
+      visited.map(function (destination) {
+        return _react2.default.createElement(_Destination2.default, {
+          handleClick: function handleClick() {
+            return _handleClick(destination.name);
+          },
+          handleDelete: function handleDelete() {
+            return _handleDelete(destination.name);
+          },
+          key: destination.name,
+          name: destination.name,
+          visited: true });
+      })
+    )
   );
 };
 
@@ -15351,27 +15373,35 @@ exports.default = function (_ref) {
   });
   return _react2.default.createElement(
     'div',
-    null,
+    { className: 'destinations' },
     _react2.default.createElement(
-      'h2',
-      { className: 'dashboard__h2' },
-      'Want to go:'
+      'div',
+      { className: 'destinations__section' },
+      _react2.default.createElement(
+        'h2',
+        { className: 'dashboard__h2' },
+        '\uD83D\uDE42 Wants to go:'
+      ),
+      unvisited.map(function (destination) {
+        return _react2.default.createElement(_FriendDestination2.default, {
+          key: destination.name,
+          name: destination.name });
+      })
     ),
-    unvisited.map(function (destination) {
-      return _react2.default.createElement(_FriendDestination2.default, {
-        key: destination.name,
-        name: destination.name });
-    }),
     _react2.default.createElement(
-      'h2',
-      { className: 'dashboard__h2' },
-      'Have been to:'
-    ),
-    visited.map(function (destination) {
-      return _react2.default.createElement(_FriendDestination2.default, {
-        key: destination.name,
-        name: destination.name });
-    })
+      'div',
+      { className: 'destinations__section' },
+      _react2.default.createElement(
+        'h2',
+        { className: 'dashboard__h2' },
+        '\uD83D\uDE0E Has been to:'
+      ),
+      visited.map(function (destination) {
+        return _react2.default.createElement(_FriendDestination2.default, {
+          key: destination.name,
+          name: destination.name });
+      })
+    )
   );
 };
 
@@ -15567,7 +15597,7 @@ exports = module.exports = __webpack_require__(29)();
 
 
 // module
-exports.push([module.i, ".dashboard {\n  height: 100%; }\n  .dashboard__h2 {\n    font-size: 16px;\n    margin-left: 10px; }\n  .dashboard__content {\n    top: 40px;\n    left: 0;\n    width: 100%;\n    transition: transform 0.3s ease;\n    height: 100%;\n    background: #FDFFFC;\n    overflow: auto; }\n  .dashboard__menu {\n    background: #2F2504;\n    color: #fff;\n    width: 100%;\n    height: 40px;\n    text-align: center;\n    line-height: 40px;\n    z-index: 100;\n    display: flex;\n    justify-content: space-between;\n    padding: 0 5px; }\n  .dashboard__menu-title {\n    text-transform: capitalize; }\n  .dashboard__button {\n    margin-right: 5px;\n    cursor: pointer; }\n  .dashboard__back-button {\n    font-size: 10px;\n    text-align: left;\n    color: #fff;\n    text-decoration: none;\n    cursor: pointer; }\n  .dashboard__side-menu {\n    height: calc(100% - 80px);\n    position: absolute;\n    top: 80px;\n    background: #2F2504;\n    right: -100%;\n    width: 100%;\n    color: #fff;\n    z-index: 10;\n    transition: transform 0.3s ease;\n    display: flex;\n    flex-direction: column;\n    justify-content: space-between; }\n\n.link--friend {\n  padding: 10px;\n  display: block;\n  color: #fff;\n  text-decoration: none;\n  text-transform: capitalize; }\n\n.button--logout {\n  position: relative;\n  bottom: 0;\n  left: 0;\n  padding: 10px; }\n", ""]);
+exports.push([module.i, ".dashboard {\n  height: 100%; }\n  .dashboard__h2 {\n    font-size: 16px;\n    margin-left: 10px;\n    color: #525d80;\n    font-family: 'Open Sans', sans-serif; }\n  .dashboard__content {\n    top: 40px;\n    left: 0;\n    width: 100%;\n    transition: transform 0.3s ease;\n    height: 100%;\n    background: #9a9a9a;\n    overflow: auto; }\n  .dashboard__menu {\n    background: #384C7A;\n    color: #fff;\n    width: 100%;\n    height: 40px;\n    text-align: center;\n    line-height: 40px;\n    z-index: 100;\n    display: flex;\n    justify-content: space-between;\n    padding: 0 5px; }\n  .dashboard__menu-title {\n    text-transform: capitalize; }\n  .dashboard__button {\n    margin-right: 5px;\n    cursor: pointer; }\n  .dashboard__back-button {\n    font-size: 10px;\n    text-align: left;\n    color: #fff;\n    text-decoration: none;\n    cursor: pointer; }\n  .dashboard__side-menu {\n    height: calc(100% - 80px);\n    position: absolute;\n    top: 80px;\n    background: #384C7A;\n    right: -100%;\n    width: 100%;\n    color: #fff;\n    z-index: 10;\n    transition: transform 0.3s ease;\n    display: flex;\n    flex-direction: column;\n    justify-content: space-between; }\n  .dashboard .emoji {\n    font-size: 18px; }\n\n.link--friend {\n  padding: 10px;\n  display: block;\n  color: #fff;\n  text-decoration: none;\n  text-transform: capitalize; }\n\n.button--logout {\n  position: relative;\n  bottom: 0;\n  left: 0;\n  padding: 10px; }\n", ""]);
 
 // exports
 
@@ -15581,7 +15611,7 @@ exports = module.exports = __webpack_require__(29)();
 
 
 // module
-exports.push([module.i, ".login {\n  height: 100%;\n  width: 100%;\n  overflow: auto; }\n  .login__backdrop {\n    background: #000;\n    opacity: 0.4;\n    width: 100%;\n    height: 100%;\n    position: absolute;\n    top: 0;\n    left: 0;\n    z-index: 0; }\n  .login__container {\n    z-index: 10;\n    position: relative;\n    padding: 30px;\n    text-align: center;\n    height: 100%;\n    width: 100%;\n    display: flex;\n    flex-direction: column;\n    justify-content: space-between; }\n  .login__h1 {\n    font-family: 'Scada', 'Open Sans', sans-serif;\n    font-size: 42px;\n    letter-spacing: 3.5px;\n    text-align: center;\n    color: #fff;\n    font-weight: 300;\n    text-transform: uppercase;\n    margin-bottom: 20px; }\n  .login__h2 {\n    font-family: 'Scada', 'Open Sans', sans-serif;\n    font-size: 16px;\n    text-align: center;\n    color: #fff;\n    opacity: 0.8;\n    font-weight: 300; }\n  .login__input {\n    border: none;\n    border-bottom: 1px solid #fff;\n    background: none;\n    box-shadow: none;\n    font-family: 'Scada', 'Open Sans', sans-serif;\n    padding: 10px;\n    text-align: center;\n    width: 100%;\n    margin-bottom: 20px;\n    font-size: 18px;\n    color: #fff; }\n    .login__input::-webkit-input-placeholder {\n      color: #ccc;\n      font-weight: 300; }\n\n.button--login {\n  background: #FF5A5F;\n  color: #fff;\n  font-family: 'Open Sans';\n  font-size: 18px;\n  padding: 10px;\n  width: 100%;\n  position: relative;\n  bottom: 0;\n  left: 0; }\n\n.shake {\n  animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;\n  transform: translateX(0, 0, 0); }\n\n@keyframes shake {\n  10%, 90% {\n    transform: translateX(-1px); }\n  20%, 80% {\n    transform: translateX(1px); }\n  30%, 50%, 70% {\n    transform: translateX(-3px); }\n  40%, 60% {\n    transform: translateX(2px); } }\n", ""]);
+exports.push([module.i, ".login {\n  height: 100%;\n  width: 100%;\n  overflow: auto;\n  background-size: cover; }\n  .login__backdrop {\n    background: #000;\n    opacity: 0;\n    width: 100%;\n    height: 100%;\n    position: absolute;\n    top: 0;\n    left: 0;\n    z-index: 0; }\n  .login__container {\n    z-index: 10;\n    position: relative;\n    padding: 30px;\n    text-align: center;\n    height: 100%;\n    width: 100%;\n    display: flex;\n    flex-direction: column;\n    justify-content: space-between; }\n  .login__h1 {\n    font-family: 'Scada', 'Open Sans', sans-serif;\n    font-size: 42px;\n    letter-spacing: 3.5px;\n    text-align: center;\n    color: #fff;\n    font-weight: 300;\n    text-transform: uppercase;\n    margin-bottom: 20px; }\n  .login__h2 {\n    font-family: 'Open Sans', sans-serif;\n    font-size: 16px;\n    text-align: center;\n    color: #cfcfcf;\n    font-weight: 400; }\n  .login__input {\n    border: none;\n    border-bottom: 1px solid #fff;\n    background: none;\n    box-shadow: none;\n    font-family: 'Open Sans', sans-serif;\n    padding: 10px;\n    text-align: center;\n    width: 100%;\n    margin-bottom: 20px;\n    font-size: 18px;\n    font-weight: 400;\n    color: #fff; }\n    .login__input:focus {\n      outline: none; }\n    .login__input::-webkit-input-placeholder {\n      color: #cfcfcf;\n      font-weight: 300;\n      font-weight: 400;\n      font-family: 'Open Sans', sans-serif;\n      font-size: 16px; }\n\n.button--login {\n  background: #FF5A5F;\n  color: #fff;\n  font-family: 'Open Sans';\n  font-size: 18px;\n  padding: 10px;\n  width: 100%;\n  position: relative;\n  bottom: 0;\n  left: 0; }\n\n.shake {\n  animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;\n  transform: translateX(0, 0, 0); }\n\n@keyframes shake {\n  10%, 90% {\n    transform: translateX(-1px); }\n  20%, 80% {\n    transform: translateX(1px); }\n  30%, 50%, 70% {\n    transform: translateX(-3px); }\n  40%, 60% {\n    transform: translateX(2px); } }\n", ""]);
 
 // exports
 
@@ -15595,7 +15625,7 @@ exports = module.exports = __webpack_require__(29)();
 
 
 // module
-exports.push([module.i, ".destination {\n  width: calc(100% - 4px);\n  border-radius: 3px;\n  margin: 2px;\n  padding: 15px;\n  display: flex;\n  background: #92AA83;\n  color: #fff;\n  justify-content: space-between;\n  font-size: 16px; }\n\n.button--checkbox {\n  width: 18px;\n  height: 18px;\n  border: 1px solid #ccc;\n  border-radius: 2px;\n  margin-right: 10px;\n  background: #fff;\n  margin-top: 2px;\n  cursor: pointer; }\n  .button--checkbox:hover {\n    background: #8AA2A9;\n    transition: 0.15s; }\n\n.button--checked {\n  width: 20px;\n  height: 20px;\n  margin-right: 10px;\n  font-size: 18px;\n  margin-top: -2px;\n  cursor: pointer; }\n  .button--checked:hover {\n    opacity: 0.7;\n    transition: 0.15s; }\n\n.button--delete {\n  margin-top: 2px; }\n", ""]);
+exports.push([module.i, ".destination {\n  width: calc(100% - 4px);\n  margin: 2px;\n  padding: 15px;\n  display: flex;\n  color: #fff;\n  border-bottom: 1px solid #ccc;\n  font-family: 'Open Sans', sans-serif;\n  justify-content: space-between;\n  color: #555;\n  font-size: 16px; }\n  .destination:last-child {\n    border: none; }\n\n.button--checkbox {\n  width: 18px;\n  height: 18px;\n  border: 1px solid #ccc;\n  border-radius: 2px;\n  margin-right: 10px;\n  background: #fff;\n  margin-top: 2px;\n  cursor: pointer; }\n  .button--checkbox:hover {\n    background: #8AA2A9;\n    transition: 0.15s; }\n\n.button--checked {\n  width: 20px;\n  height: 20px;\n  margin-right: 10px;\n  font-size: 18px;\n  margin-top: -2px;\n  cursor: pointer; }\n  .button--checked:hover {\n    opacity: 0.7;\n    transition: 0.15s; }\n\n.button--delete {\n  margin-top: 2px;\n  color: #999; }\n", ""]);
 
 // exports
 
@@ -15609,7 +15639,7 @@ exports = module.exports = __webpack_require__(29)();
 
 
 // module
-exports.push([module.i, ".destination-search {\n  background: #2F2504;\n  padding: 5px;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-around;\n  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); }\n  .destination-search__icon {\n    position: absolute;\n    z-index: 10;\n    left: 12px;\n    font-size: 18px;\n    color: #666; }\n  .destination-search input {\n    width: 100%;\n    height: 30px;\n    padding-left: 32px;\n    border-radius: 3px;\n    font-size: 14px;\n    border: none;\n    cursor: text; }\n", ""]);
+exports.push([module.i, ".destination-search {\n  background: #384C7A;\n  padding: 5px;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-around;\n  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); }\n  .destination-search__icon {\n    position: absolute;\n    z-index: 10;\n    left: 12px;\n    font-size: 18px;\n    color: #666; }\n  .destination-search input {\n    width: 100%;\n    height: 30px;\n    padding-left: 32px;\n    border-radius: 3px;\n    font-size: 14px;\n    border: none;\n    cursor: text; }\n    .destination-search input:focus {\n      outline: none; }\n", ""]);
 
 // exports
 
@@ -16354,12 +16384,7 @@ if (performance.now) {
 module.exports = performanceNow;
 
 /***/ }),
-/* 163 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "/images/3f799ed62da615614088e7a63fcb1564.jpg";
-
-/***/ }),
+/* 163 */,
 /* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -33148,6 +33173,54 @@ module.exports = function(module) {
 	return module;
 };
 
+
+/***/ }),
+/* 308 */,
+/* 309 */,
+/* 310 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "/images/d5c62d2c94896ce96d22396a6d57b5fa.jpg";
+
+/***/ }),
+/* 311 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(29)();
+// imports
+
+
+// module
+exports.push([module.i, ".destinations__section {\n  background: #fff;\n  overflow: auto;\n  margin: 2px;\n  padding-bottom: 3px;\n  box-shadow: 0px 2px 1px rgba(0, 0, 0, 0.2); }\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 312 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(311);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(36)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/sass-loader/lib/loader.js!./destinations.scss", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/sass-loader/lib/loader.js!./destinations.scss");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
 
 /***/ })
 /******/ ]);

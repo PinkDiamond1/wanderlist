@@ -103,10 +103,10 @@ export default class Dashboard extends Component {
         <div className="dashboard__menu">
           <div className="dashboard__back-button">
             {this.isOwner() ? '' : (
-              <Link className="dashboard__back-button" to={'/travelers/' + store.getState().currentUser.id}><span className="fa fa-chevron-left"></span> Me</Link>
+              <Link className="dashboard__back-button" to={'/travelers/' + store.getState().currentUser.id}><span className="fa fa-chevron-left"></span> 🏠</Link>
             )}
           </div>
-          <div className="dashboard__menu-title">{this.isOwner() ? 'My Destinations' : this.state.users.filter((user) => user.id === parseInt(this.props.params.id))[0].name + "'s Destinations"}</div>
+          <div className="dashboard__menu-title">{this.isOwner() ? '🏠 My Destinations' : '👦 ' + this.state.users.filter((user) => user.id === parseInt(this.props.params.id))[0].name + "'s Destinations"}</div>
           <div className="dashboard__button" onClick={this.toggleMenu}>
             <div className="fa fa-bars"></div>
           </div>

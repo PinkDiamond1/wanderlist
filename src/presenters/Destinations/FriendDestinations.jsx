@@ -6,19 +6,23 @@ export default ({ destinations }) => {
   const visited = destinations.filter((destination) => destination.visited)
   const unvisited = destinations.filter((destination) => !destination.visited)
   return (
-    <div>
-      <h2 className="dashboard__h2">Want to go:</h2>
-      {unvisited.map((destination) => (
-        <FriendDestination
-          key={destination.name}
-          name={destination.name} />
-      ))}
-      <h2 className="dashboard__h2">Have been to:</h2>
-      {visited.map((destination) => (
-        <FriendDestination
-          key={destination.name}
-          name={destination.name} />
-      ))}
+    <div className="destinations">
+      <div className="destinations__section">
+        <h2 className="dashboard__h2">🙂 Wants to go:</h2>
+        {unvisited.map((destination) => (
+          <FriendDestination
+            key={destination.name}
+            name={destination.name} />
+        ))}
+      </div>
+      <div className="destinations__section">
+      <h2 className="dashboard__h2">😎 Has been to:</h2>
+        {visited.map((destination) => (
+          <FriendDestination
+            key={destination.name}
+            name={destination.name} />
+        ))}
+      </div>
     </div>
   )
 }

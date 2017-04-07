@@ -4,7 +4,7 @@ import store from 'redux/store'
 import { setCurrentUser } from 'redux/actions'
 import request from 'superagent'
 import { browserHistory } from 'react-router'
-const img = 'dist/' + require('./bg.jpg');
+const img = 'dist/' + require('./flamingoes.jpg');
 
 
 export default class Login extends Component {
@@ -63,7 +63,7 @@ export default class Login extends Component {
 
   render() {
     return (
-      <div className="login" style={{background: 'url(' + img + ')'}}>
+      <div className="login" style={{backgroundImage: 'url(' + img + ')'}}>
         <div className="login__backdrop"></div>
         <div className="login__container">
           <div>

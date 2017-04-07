@@ -4,6 +4,8 @@
   &__h2 {
     font-size: 16px;
     margin-left: 10px;
+    color: #525d80;
+    font-family: 'Open Sans', sans-serif;
   }
 
   &__content {
@@ -12,12 +14,12 @@
     width: 100%;
     transition: transform 0.3s ease;
     height: 100%;
-    background: #FDFFFC;
+    background: #9a9a9a;
     overflow: auto;
   }
 
   &__menu {
-    background: #2F2504;
+    background: #384C7A;
     color: #fff;
     width: 100%;
     height: 40px;
@@ -50,7 +52,7 @@
     height: calc(100% - 80px);
     position: absolute;
     top: 80px;
-    background: #2F2504;
+    background: #384C7A;
     right: -100%;
     width: 100%;
     color: #fff;
@@ -59,6 +61,10 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+  }
+
+  .emoji {
+    font-size: 18px;
   }
 }
 
