@@ -51,12 +51,19 @@
     font-weight: 400;
     color: #fff;
     background: rgba(0,0,0,0.2);
+    transition: 0.15s;
+    will-change: background;
+
+    &:hover {
+      background: rgba(0,0,0,0.4);
+    }
 
     &:focus {
       outline: none;
       background: rgba(0,0,0,0.4);
-      transition: 0.3s;
-      will-change: background;
+
+
+
       &::-webkit-input-placeholder {
         color: transparent;
       }
@@ -82,6 +89,13 @@
   position: relative;
   bottom: 0;
   left: 0;
+  cursor: pointer;
+  transition: 0.15s;
+
+  &:hover {
+    background: #ff696d;
+    box-shadow: -1px 1px 1px rgba(0,0,0,0.2);
+  }
 }
 
 // ANIMATIONS
