@@ -1,5 +1,6 @@
 .dashboard {
   height: 100%;
+  overflow-x: hidden;
 
   &__h2 {
     font-size: 16px;
@@ -11,7 +12,6 @@
   &__content {
     top: 40px;
     left: 0;
-    width: 100%;
     transition: transform 0.3s ease;
     height: 100%;
     background: #ccc;
@@ -54,8 +54,8 @@
 
   &__side-menu {
     height: calc(100% - 39px);
-    position: absolute;
-    top: 39px;
+    position: relative;
+    top: -100%;
     background: linear-gradient(0deg, #222e4a, #384C7A);
     right: -100%;
     width: 100%;
