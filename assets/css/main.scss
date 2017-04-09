@@ -1,10 +1,13 @@
-@import 'variables';
+@font-face {
+    font-family: Scada;
+    src: url('../fonts/Scada-Regular.ttf');
+}
 
 html, body, main#root {
   margin: 0;
   width: 100%;
   height: 100%;
-  font-family: "Proxima Nova", "Open Sans", "Helvetica", sans-serif;
+  font-family: 'Open Sans', "Helvetica", sans-serif;
   overflow-x: hidden;
   background: #384C7A;
 }
