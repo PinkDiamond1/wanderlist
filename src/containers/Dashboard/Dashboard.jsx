@@ -16,7 +16,7 @@ export default class Dashboard extends Component {
     this.toggleVisited = this.toggleVisited.bind(this)
     this.deleteDestination = this.deleteDestination.bind(this)
     this.closeMenu = this.closeMenu.bind(this)
-    this.state = { users: [], sideMenuToggled: false }
+    this.state = { users: [], sideMenuToggled: false, loading: false }
   }
 
   componentDidMount() {
@@ -28,10 +28,15 @@ export default class Dashboard extends Component {
       this.setState({ users: store.getState().users })
     })
 
+    this.setState({ loading: true })
     request.get('https://young-beyond-8772.herokuapp.com/travelers')
       .set('Authorization', 'Token token=' + store.getState().currentUser.token)
       .end((err, res) => {
-        if(err) { throw(err) }
+        if(err) {
+          this.setState({ loading: false })
+          throw(err)
+         }
+        this.setState({ loading: false })
         const users = JSON.parse(res.text)
         store.dispatch(setUsers(users))
       })
@@ -58,7 +63,9 @@ export default class Dashboard extends Component {
   }
 
   toggleMenu() {
-    this.setState({ sideMenuToggled: !this.state.sideMenuToggled })
+    if(window.innerWidth < 768) {
+      this.setState({ sideMenuToggled: !this.state.sideMenuToggled })
+    }
   }
 
   closeMenu() {
@@ -101,25 +108,34 @@ export default class Dashboard extends Component {
         <div className="dashboard__menu">
           <div className="dashboard__back-button">
             {this.isOwner() ? '' : (
-              <Link className="dashboard__back-button" to={'/travelers/' + store.getState().currentUser.id}><span className="fa fa-chevron-left"></span> 🏠</Link>
+              <Link className="dashboard__back-button" to={'/travelers/' + store.getState().currentUser.id}><span className="fa fa-chevron-left"></span> <span className="emoji--large">🏠</span></Link>
             )}
           </div>
-          <div className="dashboard__menu-title">{this.isOwner() ? '🏠 My Destinations' : '👦 ' + this.state.users.filter((user) => user.id === parseInt(this.props.params.id))[0].name + "'s Destinations"}</div>
+          <div className="dashboard__menu-title">{this.isOwner() ? <div><span className="emoji--large">🏠</span> My Destinations</div> : '👦 ' + this.state.users.filter((user) => user.id === parseInt(this.props.params.id))[0].name + "'s Destinations"}</div>
           <div className="dashboard__button" onClick={this.toggleMenu}>
-            <div className="fa fa-bars"></div>
+            <div className="fa fa-bars hover-red"></div>
           </div>
         </div>
-        <div className="dashboard__content" onClick={this.closeMenu}>
-          <DestinationSearch />
+        {this.state.loading ? (
+          <div className="dashboard__loading">
+            <div>
+              <i className="fa fa-spinner fa-pulse fa-2x fa-fw Demo__spinner" />
+            </div>
+          </div>
+        ) : (
+          <div className="dashboard__content" onClick={this.closeMenu}>
+            <DestinationSearch />
 
-          <div className="dashboard__content" style={this.state.sideMenuToggled ? { transform: 'translateX(-150px)' } : null}>
-            {this.isOwner() ? (
-              <Destinations handleDelete={this.deleteDestination} handleClick={this.toggleVisited} destinations={this.currentDestinations()} />
-            ) : (
-              <FriendDestinations destinations={this.currentDestinations()} />
-            )}
+            <div className={this.state.sideMenuToggled ? 'dashboard__content toggled-open' : 'dashboard__content'}>
+              {this.isOwner() ? (
+                <Destinations handleDelete={this.deleteDestination} handleClick={this.toggleVisited} destinations={this.currentDestinations()} />
+              ) : (
+                <FriendDestinations destinations={this.currentDestinations()} />
+              )}
+            </div>
           </div>
-        </div>
+        )}
+
 
         <div className="dashboard__side-menu" style={this.state.sideMenuToggled ? { transform: 'translateX(-150px)' } : null}>
           <div>
