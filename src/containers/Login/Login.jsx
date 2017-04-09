@@ -12,6 +12,7 @@ export default class Login extends Component {
     super(props)
     this.handleClick = this.handleClick.bind(this)
     this.handleInput = this.handleInput.bind(this)
+    this.handleKeyPress = this.handleKeyPress.bind(this)
     this.state = { input: "", loading: false, error: false }
   }
 
@@ -46,6 +47,12 @@ export default class Login extends Component {
       })
   }
 
+  handleKeyPress(e) {
+    if(e.key === 'Enter') {
+      this.handleClick()
+    }
+  }
+
   handleInput(e) {
     this.setState({ input: e.target.value })
   }
@@ -61,6 +68,7 @@ export default class Login extends Component {
           <div>
             <input className={this.state.error ? 'shake login__input' : 'login__input'}
               onChange={this.handleInput}
+              onKeyPress={this.handleKeyPress}
               value={this.state.input}
               placeholder="enter your name to continue" />
             <div className="button--login" onClick={this.handleClick}>

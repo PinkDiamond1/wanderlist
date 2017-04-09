@@ -14069,7 +14069,7 @@ var Dashboard = function (_Component) {
     _this.toggleVisited = _this.toggleVisited.bind(_this);
     _this.deleteDestination = _this.deleteDestination.bind(_this);
     _this.closeMenu = _this.closeMenu.bind(_this);
-    _this.state = { users: [], sideMenuToggled: false, loading: false };
+    _this.state = { users: [], sideMenuToggled: false, loading: true };
     return _this;
   }
 
@@ -14083,16 +14083,14 @@ var Dashboard = function (_Component) {
           return _reactRouter.browserHistory.push('/');
         }
 
-        _this2.setState({ users: _store2.default.getState().users });
+        _this2.setState({ users: _store2.default.getState().users, loading: false });
       });
 
-      this.setState({ loading: true });
       _superagent2.default.get('https://young-beyond-8772.herokuapp.com/travelers').set('Authorization', 'Token token=' + _store2.default.getState().currentUser.token).end(function (err, res) {
         if (err) {
-          _this2.setState({ loading: false });
           throw err;
+          return _reactRouter.browserHistory.push('/');
         }
-        _this2.setState({ loading: false });
         var users = JSON.parse(res.text);
         _store2.default.dispatch((0, _actions.setUsers)(users));
       });
@@ -14216,7 +14214,11 @@ var Dashboard = function (_Component) {
               )
             )
           ),
-          _react2.default.createElement(
+          this.state.loading ? _react2.default.createElement(
+            'div',
+            { className: 'dashboard__menu-title' },
+            'Welcome!'
+          ) : _react2.default.createElement(
             'div',
             { className: 'dashboard__menu-title' },
             this.isOwner() ? _react2.default.createElement(
@@ -14352,6 +14354,7 @@ var Login = function (_Component) {
 
     _this.handleClick = _this.handleClick.bind(_this);
     _this.handleInput = _this.handleInput.bind(_this);
+    _this.handleKeyPress = _this.handleKeyPress.bind(_this);
     _this.state = { input: "", loading: false, error: false };
     return _this;
   }
@@ -14388,6 +14391,13 @@ var Login = function (_Component) {
       });
     }
   }, {
+    key: 'handleKeyPress',
+    value: function handleKeyPress(e) {
+      if (e.key === 'Enter') {
+        this.handleClick();
+      }
+    }
+  }, {
     key: 'handleInput',
     value: function handleInput(e) {
       this.setState({ input: e.target.value });
@@ -14420,6 +14430,7 @@ var Login = function (_Component) {
             null,
             _react2.default.createElement('input', { className: this.state.error ? 'shake login__input' : 'login__input',
               onChange: this.handleInput,
+              onKeyPress: this.handleKeyPress,
               value: this.state.input,
               placeholder: 'enter your name to continue' }),
             _react2.default.createElement(
@@ -14651,7 +14662,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var requireLogin = function requireLogin(nextState, replace) {
   var currentUser = _store2.default.getState().currentUser;
   if (!currentUser) {
-    replace({ pathname: '/login' });
+    replace({ pathname: '/' });
   }
 };
 

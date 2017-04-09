@@ -16,7 +16,7 @@ export default class Dashboard extends Component {
     this.toggleVisited = this.toggleVisited.bind(this)
     this.deleteDestination = this.deleteDestination.bind(this)
     this.closeMenu = this.closeMenu.bind(this)
-    this.state = { users: [], sideMenuToggled: false, loading: false }
+    this.state = { users: [], sideMenuToggled: false, loading: true }
   }
 
   componentDidMount() {
@@ -25,18 +25,16 @@ export default class Dashboard extends Component {
         return browserHistory.push('/')
       }
 
-      this.setState({ users: store.getState().users })
+      this.setState({ users: store.getState().users, loading: false })
     })
 
-    this.setState({ loading: true })
     request.get('https://young-beyond-8772.herokuapp.com/travelers')
       .set('Authorization', 'Token token=' + store.getState().currentUser.token)
       .end((err, res) => {
         if(err) {
-          this.setState({ loading: false })
           throw(err)
-         }
-        this.setState({ loading: false })
+          return browserHistory.push('/')
+        }
         const users = JSON.parse(res.text)
         store.dispatch(setUsers(users))
       })
@@ -111,7 +109,11 @@ export default class Dashboard extends Component {
               <Link className="dashboard__back-button" to={'/travelers/' + store.getState().currentUser.id}><span className="fa fa-chevron-left"></span> <span className="emoji--large">🏠</span></Link>
             )}
           </div>
-          <div className="dashboard__menu-title">{this.isOwner() ? <div><span className="emoji--large">🏠</span> My Destinations</div> : '👦 ' + this.state.users.filter((user) => user.id === parseInt(this.props.params.id))[0].name + "'s Destinations"}</div>
+          {this.state.loading ? (
+            <div className="dashboard__menu-title">Welcome!</div>
+          ) : (
+            <div className="dashboard__menu-title">{this.isOwner() ? <div><span className="emoji--large">🏠</span> My Destinations</div> : '👦 ' + this.state.users.filter((user) => user.id === parseInt(this.props.params.id))[0].name + "'s Destinations"}</div>
+          )}
           <div className="dashboard__button" onClick={this.toggleMenu}>
             <div className="fa fa-bars hover-red"></div>
           </div>

@@ -9,7 +9,7 @@ import Dashboard from 'containers/Dashboard/Dashboard.jsx'
 const requireLogin = (nextState, replace) => {
   const currentUser = store.getState().currentUser
   if(!currentUser) {
-    replace({ pathname: '/login' })
+    replace({ pathname: '/' })
   }
 }
 
